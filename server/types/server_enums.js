@@ -1,0 +1,6 @@
+export const FavTypes = {
+    ADVERTISEMENT: 'ADVERTISEMENT',
+    COLLECTION: 'COLLECTION',
+    ITEM: 'ITEM',
+    REQUEST: 'REQUEST'    
+}

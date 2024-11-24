@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
+    "pg": "^8.13.1",
+    "sequelize": "^6.37.5",
+    "pg-hstore": "^2.3.4"
+  }
+}
