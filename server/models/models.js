@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../db');
-const { FavTypes } = require('../types');
+const FavTypes = require('../types');
 
 const User = sequelize.define('user', {
     id: {
@@ -36,6 +36,8 @@ const User = sequelize.define('user', {
     },
 }, {timestamps: false})
 
+console.log(Object.values(FavTypes))
+
 const UserFavorite = sequelize.define('userfavorite', {
     id: {
         type: DataTypes.STRING,
@@ -46,7 +48,7 @@ const UserFavorite = sequelize.define('userfavorite', {
         allowNull: false
     },
     favoritable_type: {
-        type: DataTypes.ENUM(Object.values(FavTypes)),
+        type: DataTypes.ENUM(...Object.values(FavTypes)),
         allowNull: false
     },
     user_id: {
@@ -85,6 +87,18 @@ const UserProfile = sequelize.define('userprofile', {
     }
   },
 {timestamps: false});
+
+
+const UserReportType = sequelize.define('userreporttype', {
+    id: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+    },
+    title: {
+        type: DataTypes.STRING(200),
+        allowNull: false
+    }
+},{timestamps: false})
 
 const UserReport = sequelize.define('userreport', {
     id: {
@@ -127,7 +141,7 @@ const UserReport = sequelize.define('userreport', {
   },
 {timestamps: false});
 
-const UserReportType = sequelize.define('userreporttype', {
+const Category = sequelize.define('category', {
     id: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -135,8 +149,12 @@ const UserReportType = sequelize.define('userreporttype', {
     title: {
         type: DataTypes.STRING(200),
         allowNull: false
-    }
-},{timestamps: false})
+    },
+}, {timestamps: false})
+
+
+
+
 
 const Collection = sequelize.define('collection', {
     id: {
@@ -177,16 +195,58 @@ const Collection = sequelize.define('collection', {
     }
 },{timestamps: false})
 
-const Category = sequelize.define('category', {
+const Item = sequelize.define('item', {
     id: {
         type: DataTypes.STRING,
         primaryKey: true,
+    },
+    public_id: { 
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false
     },
     title: {
         type: DataTypes.STRING(200),
         allowNull: false
     },
+    item_description: {
+        type: DataTypes.STRING,
+    },
+    owner_id: {
+        type: DataTypes.STRING,
+        references: {
+            model: User,
+            key: 'id'
+        }
+    },
+    photo: {
+        type: DataTypes.STRING,
+    }
 }, {timestamps: false})
+
+const CollectionItem = sequelize.define('collectionitem', {
+    id: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+    },
+    collection_id: {
+        type: DataTypes.STRING,
+        references: {
+            model: Collection,
+            key: 'id'
+        }
+    },
+    item_id: {
+        type: DataTypes.STRING,
+        references: {
+            model: Item,
+            key: 'id'
+        }
+    },
+}, {timestamps: false})
+
+
+
 
 const CollectionRating = sequelize.define('collectionrating', {
     id: {
@@ -215,62 +275,9 @@ const CollectionRating = sequelize.define('collectionrating', {
     }
 }, {timestamps: false})
 
-const Items = sequelize.define('item', {
-    id: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-    },
-    public_id: { 
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        allowNull: false
-    },
-    title: {
-        type: DataTypes.STRING(200),
-        allowNull: false
-    },
-    collection_item_id: {
-        type: DataTypes.STRING,
-        references: {
-            model: CollectionItem,
-            key: 'id'
-        }
-    },
-    item_description: {
-        type: DataTypes.STRING,
-    },
-    owner_id: {
-        type: DataTypes.STRING,
-        references: {
-            model: User,
-            key: 'id'
-        }
-    },
-    photo: {
-        type: DataTypes.STRING,
-    }
-}, {timestamps: false})
 
-const CollectionItems = sequelize.define('collectionitem', {
-    id: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-    },
-    collection_id: {
-        type: DataTypes.STRING,
-        references: {
-            model: Collection,
-            key: 'id'
-        }
-    },
-    item_id: {
-        type: DataTypes.STRING,
-        references: {
-            model: Item,
-            key: 'id'
-        }
-    },
-}, {timestamps: false})
+
+
 
 const ItemRequest = sequelize.define('itemrequest', {
     id: {
@@ -340,6 +347,8 @@ const ItemAdvertisement = sequelize.define('itemadvertisement', {
     },
 }, {timestamps: false})
 
+
+
 // User associations
 User.hasOne(UserProfile, { foreignKey: 'user_id' });
 User.hasMany(UserFavorite, { foreignKey: 'user_id' });
@@ -392,7 +401,7 @@ ItemAdvertisement.belongsTo(Item, { foreignKey: 'item_id' });
 ItemAdvertisement.belongsTo(User, { foreignKey: 'user_id' });
 ItemAdvertisement.belongsTo(Category, { foreignKey: 'category_id' });
 
-module.exports = [
+module.exports = {
     User,
     UserFavorite,
     UserProfile,
@@ -400,10 +409,11 @@ module.exports = [
     UserReportType,
     Category,
     Collection,
-    CollectionItems,
+    CollectionItem,
     CollectionRating,
-    Items,
+    Item,
     ItemAdvertisement,
-    ItemRequest
-]
+    ItemRequest,
+    sequelize
+}
 

@@ -3,7 +3,8 @@ const cors = require('cors');
 const app = express()
 const fs = require('fs');
 const https = require('https');
-const sequelize = require('./db');
+const {sequelize} = require('./models/models')
+const { DataTypes } = require('sequelize');
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -25,9 +26,7 @@ const options = {
 const startserver = async () => {
     try {
         await sequelize.authenticate();
-        console.log(123);
-        await sequelize.transaction(async (transaction) => { await sequelize.sync({ force: true, transaction }); });
-        console.log(123);
+        await sequelize.sync();
         const httpsServer = https.createServer(options, app)
         httpsServer.listen(PORT, (err) => {
             if(err) {

@@ -1,1 +1,2 @@
-export * from './server_enums'
+
+module.exports = require('./server_enums')
