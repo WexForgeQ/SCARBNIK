@@ -15,7 +15,7 @@ const swaggerOptions = {
       }
     ]
   },
-  apis: ['./routes/*.js'] // Укажите путь к файлам, где описаны эндпоинты
+  apis: ['./routes/*.js', './models/swagger.models.js'] // Укажите путь к файлам, где описаны эндпоинты
 }
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)

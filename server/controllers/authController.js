@@ -33,9 +33,6 @@ const generateVerificationToken = (email, userId) => {
   })
 }
 
-const generateKey = () => {
-  return Math.floor(Math.random() * (999999 - 111111) + 111111)
-}
 
 class AuthController {
   async registration(req, res, next) {
@@ -164,7 +161,7 @@ class AuthController {
   }
 
   async getRole(req, res, next) {
-    const { access } = req.body
+    const { access } = req.query
     const user = await User.findOne({ where: { access_token: access } })
     if (!user) {
       return next(ApiError.badRequest('Пользователь не найден'))

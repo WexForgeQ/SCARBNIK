@@ -7,11 +7,21 @@ const { sequelize } = require('./models/models')
 const { DataTypes } = require('sequelize')
 const router = require('./routes/index')
 const swaggerSetup = require('./swagger')
+const session = require('express-session')
+const passport = require('./controllers/passportController')
 
 app.use(
   cors({
     origin: 'http://localhost:3000',
     credentials: true
+  })
+)
+
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: false
   })
 )
 
@@ -27,6 +37,9 @@ const options = {
   cert: fs.readFileSync(SSL_CERT_PATH)
 }
 swaggerSetup(app)
+
+app.use(passport.initialize())
+app.use(passport.session())
 app.use('/api', router)
 
 const startserver = async () => {

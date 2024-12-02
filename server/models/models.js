@@ -19,8 +19,7 @@ const User = sequelize.define(
       allowNull: false
     },
     password: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     email: {
       type: DataTypes.STRING,
@@ -31,12 +30,16 @@ const User = sequelize.define(
       allowNull: false
     },
     refresh_token: {
-      type: DataTypes.STRING(200)
+      type: DataTypes.STRING(1000)
     },
     access_token: {
-      type: DataTypes.STRING(200)
+      type: DataTypes.STRING(1000)
     },
     isApproved: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    isBanned: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     }
