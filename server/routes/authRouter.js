@@ -88,13 +88,7 @@ router.get(
  *       302:
  *         description: Перенаправление на страницу авторизации Yandex
  */
-router.get(
-  '/yandex',
-  cors(corsOptions),
-  passport.authenticate('yandex', {
-    scope: ['profile', 'email']
-  })
-)
+router.get('/yandex', cors(corsOptions), passport.authenticate('yandex'))
 
 /**
  * @swagger

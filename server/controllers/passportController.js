@@ -37,21 +37,23 @@ passport.use(
       clientSecret: process.env.GOOGLE_SECRET_KEY,
       callbackURL: 'https://localhost:5000/api/auth/google/callback'
     },
-    async (profile, done) => {
+    async (access_token, tokens, profile, done) => {
       try {
+        console.log(profile)
         let user = await User.findOne({
           where: { email: profile.emails[0].value }
         })
         const tokenData = generateJwt(profile.emails[0].value, 2)
         if (!user) {
           user = await User.create({
-            id: profile.id,
+            id: crypto.randomUUID(),
             email: profile.emails[0].value,
             login: profile.displayName,
             access_token: tokenData.access_token,
             refresh_token: tokenData.refresh_token,
             role: 2,
-            isApproved: true
+            isApproved: true,
+            isOauthProfile: true
           })
           await UserProfile.create({
             id: crypto.randomUUID(),
@@ -100,27 +102,30 @@ passport.use(
       clientSecret: process.env.YANDEX_SECRET_KEY,
       callbackURL: 'https://localhost:5000/api/auth/yandex/callback'
     },
-    async (profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
+      console.log(profile)
       try {
-        let user = await User.findOne({
-          where: { email: profile.emails[0].value }
-        })
-        const tokenData = generateJwt(profile.emails[0].value, 2)
+        const email = profile.emails[0].value
+        console.log(profile.emails[0])
+        let user = await User.findOne({ where: { email } })
+        const tokenData = generateJwt(email, 2)
+
         if (!user) {
           user = await User.create({
-            id: profile.id,
-            email: profile.emails[0].value,
+            id: crypto.randomUUID(),
+            email,
             login: profile.displayName,
             access_token: tokenData.access_token,
             refresh_token: tokenData.refresh_token,
             role: 2,
             isApproved: true
           })
+
           await UserProfile.create({
             id: crypto.randomUUID(),
             user_id: user.id,
             fio: profile.displayName,
-            photo: profile.photos[0].value,
+            photo: profile.photos[0] ? profile.photos[0].value : null,
             registration_date: sequelize.literal('CURRENT_TIMESTAMP')
           })
         } else {
@@ -135,10 +140,11 @@ passport.use(
               }
             }
           )
+
           await UserProfile.update(
             {
               fio: profile.displayName,
-              photo: profile.photos[0].value
+              photo: profile.photos[0] ? profile.photos[0].value : null
             },
             {
               where: {
@@ -147,6 +153,7 @@ passport.use(
             }
           )
         }
+
         done(null, user, tokenData) // Передача токенов клиенту
       } catch (err) {
         console.error('Error in strategy:', err)

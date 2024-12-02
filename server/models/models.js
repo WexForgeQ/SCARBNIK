@@ -42,6 +42,10 @@ const User = sequelize.define(
     isBanned: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    isOauthProfile: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   },
   { timestamps: false }
