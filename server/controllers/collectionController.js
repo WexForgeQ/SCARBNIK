@@ -1,7 +1,7 @@
 const { Collection, CollectionItem, Item } = require('../models/models')
 const ApiError = require('../errors/ApiError')
 
-const CollectionController = {
+class CollectionController {
   async create(req, res, next) {
     try {
       const collection = await Collection.create({
@@ -12,7 +12,7 @@ const CollectionController = {
     } catch (error) {
       return next(ApiError.badRequest(error.message))
     }
-  },
+  }
 
   async read(req, res, next) {
     try {
@@ -26,7 +26,7 @@ const CollectionController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async update(req, res, next) {
     try {
@@ -41,7 +41,7 @@ const CollectionController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async delete(req, res, next) {
     try {
@@ -55,7 +55,7 @@ const CollectionController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async getAll(req, res, next) {
     try {
@@ -84,4 +84,4 @@ const CollectionController = {
   }
 }
 
-module.exports = CollectionController
+module.exports = new CollectionController()

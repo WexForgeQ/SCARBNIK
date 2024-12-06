@@ -3,6 +3,8 @@ const authController = require('../controllers/authController')
 const router = new Router()
 const passport = require('../controllers/passportController') // Google OAuth
 const cors = require('cors')
+const authMiddleware = require('../middleware/authMiddleware')
+const errorMiddleware = require('../middleware/errorMiddleware')
 
 const corsOptions = {
   origin: 'https://localhost:5000', // Замените на ваш домен
@@ -24,9 +26,13 @@ const corsOptions = {
 router.get(
   '/google',
   cors(corsOptions),
-  passport.authenticate('google', {
-    scope: ['profile', 'email']
-  })
+  passport.authenticate(
+    'google',
+    {
+      scope: ['profile', 'email']
+    },
+    errorMiddleware
+  )
 )
 
 /**
@@ -71,6 +77,7 @@ router.get(
   passport.authenticate('google', {
     failureRedirect: '/login'
   }),
+  errorMiddleware,
   (req, res) => {
     // Возвращаем токены и данные пользователя на клиент
     const { user, access_token, refresh_token } = req.user
@@ -88,7 +95,12 @@ router.get(
  *       302:
  *         description: Перенаправление на страницу авторизации Yandex
  */
-router.get('/yandex', cors(corsOptions), passport.authenticate('yandex'))
+router.get(
+  '/yandex',
+  cors(corsOptions),
+  passport.authenticate('yandex'),
+  errorMiddleware
+)
 
 /**
  * @swagger
@@ -132,6 +144,7 @@ router.get(
   passport.authenticate('yandex', {
     failureRedirect: '/login'
   }),
+  errorMiddleware,
   (req, res) => {
     const { user, access_token, refresh_token } = req.user
     res.json({ user, access_token, refresh_token })
@@ -165,7 +178,7 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.post('/registration', authController.registration)
+router.post('/registration', authController.registration, errorMiddleware)
 
 /**
  * @swagger
@@ -204,7 +217,7 @@ router.post('/registration', authController.registration)
  *       500:
  *         description: Internal server error
  */
-router.get('/verify-email', authController.verifyEmail)
+router.get('/verify-email', authController.verifyEmail, errorMiddleware)
 
 /**
  * @swagger
@@ -247,7 +260,7 @@ router.get('/verify-email', authController.verifyEmail)
  *       500:
  *         description: Internal server error
  */
-router.post('/login', authController.login)
+router.post('/login', authController.login, errorMiddleware)
 
 /**
  * @swagger
@@ -272,7 +285,7 @@ router.post('/login', authController.login)
  *       500:
  *         description: Internal server error
  */
-router.post('/logout', authController.logout)
+router.post('/logout', authMiddleware, authController.logout, errorMiddleware)
 
 /**
  * @swagger
@@ -302,6 +315,6 @@ router.post('/logout', authController.logout)
  *       500:
  *         description: Internal server error
  */
-router.get('/getRole', authController.getRole)
+router.get('/getRole', authMiddleware, authController.getRole, errorMiddleware)
 
 module.exports = router

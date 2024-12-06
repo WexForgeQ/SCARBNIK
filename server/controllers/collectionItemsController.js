@@ -1,7 +1,7 @@
 const { CollectionItem, Item } = require('../models/models')
 const ApiError = require('../errors/ApiError')
 
-const CollectionItemController = {
+class CollectionItemController {
   async create(req, res) {
     try {
       const collectionItem = await CollectionItem.create({
@@ -12,7 +12,7 @@ const CollectionItemController = {
     } catch (error) {
       throw ApiError.badRequest(error.message)
     }
-  },
+  }
 
   async read(req, res) {
     try {
@@ -24,8 +24,7 @@ const CollectionItemController = {
     } catch (error) {
       throw ApiError.badRequest(error.message)
     }
-  },
-
+  }
   async update(req, res) {
     try {
       const [updated] = await CollectionItem.update(req.body, {
@@ -39,7 +38,7 @@ const CollectionItemController = {
     } catch (error) {
       throw ApiError.badRequest(error.message)
     }
-  },
+  }
 
   async delete(req, res) {
     try {
@@ -53,7 +52,7 @@ const CollectionItemController = {
     } catch (error) {
       throw ApiError.badRequest(error.message)
     }
-  },
+  }
 
   async addItem(req, res) {
     try {
@@ -67,7 +66,7 @@ const CollectionItemController = {
     } catch (error) {
       throw ApiError.badRequest(error.message)
     }
-  },
+  }
 
   async removeItem(req, res) {
     try {
@@ -82,7 +81,7 @@ const CollectionItemController = {
     } catch (error) {
       throw ApiError.badRequest(error.message)
     }
-  },
+  }
 
   async getAllItems(req, res) {
     try {
@@ -98,4 +97,4 @@ const CollectionItemController = {
   }
 }
 
-module.exports = CollectionItemController
+module.exports = new CollectionItemController()

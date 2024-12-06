@@ -2,7 +2,7 @@ const { UserProfile } = require('../models/models')
 const ApiError = require('../errors/ApiError')
 const crypto = require('crypto')
 
-const UserProfileController = {
+class UserProfileController {
   async create(req, res, next) {
     try {
       const userProfile = await UserProfile.create({
@@ -13,7 +13,7 @@ const UserProfileController = {
     } catch (error) {
       return next(ApiError.badRequest(error.message))
     }
-  },
+  }
 
   async read(req, res, next) {
     try {
@@ -25,7 +25,7 @@ const UserProfileController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async update(req, res, next) {
     try {
@@ -40,7 +40,7 @@ const UserProfileController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async delete(req, res, next) {
     try {
@@ -57,4 +57,4 @@ const UserProfileController = {
   }
 }
 
-module.exports = UserProfileController
+module.exports = new UserProfileController()

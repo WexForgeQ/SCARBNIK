@@ -7,7 +7,7 @@ const {
 } = require('../models/models')
 const ApiError = require('../errors/ApiError')
 
-const UserFavoriteController = {
+class UserFavoriteController {
   async create(req, res, next) {
     try {
       const userFavorite = await UserFavorite.create({
@@ -18,7 +18,7 @@ const UserFavoriteController = {
     } catch (error) {
       return next(ApiError.badRequest(error.message))
     }
-  },
+  }
 
   async read(req, res, next) {
     try {
@@ -30,7 +30,7 @@ const UserFavoriteController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async update(req, res, next) {
     try {
@@ -45,7 +45,7 @@ const UserFavoriteController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async delete(req, res, next) {
     try {
@@ -59,7 +59,7 @@ const UserFavoriteController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async addFavorite(req, res, next) {
     try {
@@ -74,7 +74,7 @@ const UserFavoriteController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async removeFavorite(req, res, next) {
     try {
@@ -96,7 +96,7 @@ const UserFavoriteController = {
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
-  },
+  }
 
   async getAllFavorites(req, res, next) {
     try {
@@ -125,4 +125,4 @@ const UserFavoriteController = {
   }
 }
 
-module.exports = UserFavoriteController
+module.exports = new UserFavoriteController()

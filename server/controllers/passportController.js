@@ -4,6 +4,7 @@ const YandexStrategy = require('passport-yandex').Strategy
 const { User, UserProfile } = require('../models/models')
 const jwt = require('jsonwebtoken')
 const sequelize = require('../db')
+const ApiError = require('../errors/ApiError')
 require('dotenv').config()
 
 passport.serializeUser((user, done) => {
@@ -88,7 +89,7 @@ passport.use(
         }
         done(null, user, tokenData) // Передача токенов клиенту
       } catch (err) {
-        console.error('Error in strategy:', err)
+        ApiError.badRequest('Ошибка:', err)
         done(err)
       }
     }
@@ -118,7 +119,8 @@ passport.use(
             access_token: tokenData.access_token,
             refresh_token: tokenData.refresh_token,
             role: 2,
-            isApproved: true
+            isApproved: true,
+            isOauthProfile: true
           })
 
           await UserProfile.create({
@@ -156,7 +158,7 @@ passport.use(
 
         done(null, user, tokenData) // Передача токенов клиенту
       } catch (err) {
-        console.error('Error in strategy:', err)
+        ApiError.badRequest('Ошибка:', err)
         done(err)
       }
     }

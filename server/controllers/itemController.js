@@ -1,7 +1,7 @@
 const { Item } = require('../models/models')
-const ApiError = require('../error/ApiError')
+const ApiError = require('../errors/ApiError')
 
-const ItemController = {
+class ItemController {
   async create(req, res) {
     try {
       const item = await Item.create({ ...req.body, id: crypto.randomUUID() })
@@ -9,7 +9,7 @@ const ItemController = {
     } catch (error) {
       throw ApiError.badRequest(error.message)
     }
-  },
+  }
 
   async read(req, res) {
     try {
@@ -21,7 +21,7 @@ const ItemController = {
     } catch (error) {
       throw ApiError.internal('Внутренняя ошибка сервера')
     }
-  },
+  }
 
   async update(req, res) {
     try {
@@ -36,7 +36,7 @@ const ItemController = {
     } catch (error) {
       throw ApiError.internal('Внутренняя ошибка сервера')
     }
-  },
+  }
 
   async delete(req, res) {
     try {
@@ -50,7 +50,7 @@ const ItemController = {
     } catch (error) {
       throw ApiError.internal('Внутренняя ошибка сервера')
     }
-  },
+  }
 
   async list(req, res) {
     try {
@@ -74,4 +74,4 @@ const ItemController = {
   }
 }
 
-module.exports = ItemController
+module.exports = new ItemController()
