@@ -3,6 +3,7 @@ const UserProfileController = require('../controllers/userProfilesController')
 const authMiddleware = require('../middleware/authMiddleware')
 const errorMiddleware = require('../middleware/errorMiddleware')
 const router = express.Router()
+const multer = require('multer')
 
 /**
  * @swagger
@@ -143,9 +144,59 @@ router.get('/:id', UserProfileController.read)
  */
 router.put(
   '/:id',
-  authMiddleware,
+  //authMiddleware,
   UserProfileController.update,
   errorMiddleware
+)
+
+const upload = multer({ storage: multer.memoryStorage() })
+
+/**
+ * @swagger
+ * /api/userprofiles/upload-image:
+ *   post:
+ *     summary: Загрузить изображение профиля
+ *     consumes:
+ *       - multipart/form-data
+ *     tags: [UserProfiles]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Изображение профиля (PNG, JPG и т.д.)
+ *                 required: true
+ *               userId:
+ *                 type: string
+ *                 description: Идентификатор пользователя
+ *                 required: true
+ *     responses:
+ *       200:
+ *         description: Изображение загружено успешно
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 imageUrl:
+ *                   type: string
+ *                 updatedUserProfile:
+ *                   type: object
+ *       500:
+ *         description: Внутренняя ошибка сервера
+ */
+
+router.post(
+  '/upload-image',
+  upload.single('image'),
+  UserProfileController.uploadImage
 )
 
 /**

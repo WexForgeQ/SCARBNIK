@@ -33,7 +33,6 @@ const generateVerificationToken = (email, userId) => {
   })
 }
 
-
 class AuthController {
   async registration(req, res, next) {
     try {
@@ -95,7 +94,8 @@ class AuthController {
         { where: { id: user.id } }
       )
       await UserProfile.create({
-        id: user.id,
+        id: crypto.randomUUID(),
+        user_id: user.id,
         fio: 'default',
         phone: 'default',
         registration_date: sequelize.literal('CURRENT_TIMESTAMP')

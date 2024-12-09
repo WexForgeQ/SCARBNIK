@@ -1,0 +1,23 @@
+FROM node:14
+
+# Устанавливаем рабочую директорию
+WORKDIR /usr/src/app
+
+# Копируем package.json и package-lock.json
+COPY package*.json ./
+
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем остальные файлы приложения
+COPY . .
+
+# Создаем и устанавливаем SSL сертификаты
+RUN mkdir -p /usr/src/app/certs && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /usr/src/app/certs/key.pem -out /usr/src/app/certs/cert.pem -subj "/CN=localhost"
+
+# Указываем порт, который будет использовать приложение
+EXPOSE 5000
+
+# Запускаем приложение
+CMD [ "node", "app.js" ]
