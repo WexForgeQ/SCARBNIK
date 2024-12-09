@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Скрытие стандартной кнопки для ввода пароля в Chrome */
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+	display: none;
+}
+
+input[type='password']::-webkit-inner-spin-button,
+input[type='password']::-webkit-calendar-picker-indicator {
+	display: none;
+}
+
+input[type='password']::-webkit-credentials-auto-fill-button,
+input[type='password']::-webkit-textfield-decoration-container {
+	display: none;
+}
+
+* {
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Необходим для поддержки стандартных браузеров */
+}

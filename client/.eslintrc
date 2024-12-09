@@ -1,0 +1,55 @@
+{
+	"env": {
+		"browser": true,
+		"es2021": true,
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:import/errors",
+		"plugin:import/warnings",
+		"plugin:import/typescript",
+		"plugin:prettier/recommended",
+		"plugin:tailwindcss/recommended",
+	],
+	"plugins": ["react", "@typescript-eslint", "prettier", "import", "tailwindcss"],
+	"rules": {
+		"prettier/prettier": [
+			"error",
+			{
+				"singleQuote": true,
+				"useTabs": true,
+				"tabWidth": 4,
+				"semi": true,
+				"bracketSpacing": true,
+				"printWidth": 100,
+				"trailingComma": "all",
+				"endOfLine": "auto",
+			},
+		],
+		"react/react-in-jsx-scope": "off",
+		"@typescript-eslint/no-empty-function": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/no-explicit-any": "off",
+	},
+	"settings": {
+		"import/resolver": {
+			"alias": {
+				"map": [
+					["@components", "./src/components"],
+					["@pages", "./src/pages"],
+					["@assets", "./src/assets"],
+					["@router", "./src/router"],
+					["@features", "./src/features"],
+					["@core", "./src/core"],
+					["@api-gen", "./src/api-gen/"],
+				],
+				"extensions": [".ts", ".js", ".jsx", ".tsx", ".json"],
+			},
+		},
+		"react": {
+			"version": "detect",
+		},
+	},
+}
