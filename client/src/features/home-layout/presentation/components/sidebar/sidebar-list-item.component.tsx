@@ -8,7 +8,7 @@ export const SidebarListItem = memo((props: SidebarItemProps) => {
 			className={twMerge(
 				'tracking-tigh flex cursor-pointer bg-transparent py-[14px] pl-[60px] font-sans text-sm font-normal leading-5 text-[#6F7276]',
 				props.isSelected
-					? 'border-r-[2px] border-solid border-primary bg-[#EDF2FA] text-primary'
+					? 'border-primary text-primary border-r-[2px] border-solid bg-[#EDF2FA]'
 					: '',
 			)}
 			id={props.id}

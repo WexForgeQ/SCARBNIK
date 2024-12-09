@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppNavigate, useAppSelector } from '@core';
 import { useEffect } from 'react';
 import { ImExit } from 'react-icons/im';
-import { AUTH_FETCH_ROUTES, AUTH_ROUTES, logout } from '../../../../auth';
+import { AUTH_FETCH_ROUTES, AUTH_ROUTES } from '../../../../auth';
 
 export const LogoutHeader = () => {
 	const dispatch = useAppDispatch();
@@ -13,16 +13,16 @@ export const LogoutHeader = () => {
 			navigate('/auth' + AUTH_ROUTES.login.route);
 	}, [authData.fetch_data?.fetch_name]);
 
-	const logoutHandler = () => {
-		dispatch(logout());
-	};
+	// const logoutHandler = () => {
+	// 	dispatch(logout());
+	// };
 
 	return (
 		<div className="flex flex-row items-center gap-[21px]">
 			<p className="text-sm font-normal leading-5 tracking-tight text-[#14181F]">Admin</p>
 			<div
 				className="relative size-[32px] cursor-pointer rounded-lg border border-solid border-[#EDEFF2]"
-				onClick={logoutHandler}
+				// onClick={logoutHandler}
 			>
 				<ImExit className="absolute left-[6px] top-[6px] size-[20px]" />
 			</div>

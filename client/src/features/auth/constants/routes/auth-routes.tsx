@@ -1,16 +1,16 @@
-import { CodeConfirmPage, CompanyRegistrationPage, LoginPage } from '../../presentation';
+import { EmailVerificationPage, LoginPage, RegistrationPage } from '../../presentation';
 
 export const AUTH_ROUTES = {
 	login: {
 		route: 'login',
 		element: <LoginPage />,
 	},
-	code_approve: {
-		route: 'code-approve',
-		element: <CodeConfirmPage />,
+	email_approve: {
+		route: 'email-verification',
+		element: <EmailVerificationPage />,
 	},
-	company_registration: {
-		route: 'company-registration',
-		element: <CompanyRegistrationPage />,
+	registration: {
+		route: 'registration',
+		element: <RegistrationPage />,
 	},
 };

@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import { SimpleTable } from '@core';
 import {
 	MaterialsAddFormDefaultValues,
 	MaterialsEditFormDefaultValues,
@@ -71,7 +70,6 @@ export const MaterialsPage = () => {
 				}}
 			/>
 			<GuidbookPageTableWrapper />
-			<SimpleTable columns={columns} data={testData}></SimpleTable>
 		</div>
 	);
 };

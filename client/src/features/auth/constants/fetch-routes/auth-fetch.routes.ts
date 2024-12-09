@@ -1,7 +1,17 @@
 export const AUTH_FETCH_ROUTES = {
 	group: 'auth',
+	google: {
+		url: `${process.env.REACT_APP_API_URL}/auth/google`,
+		fetch_name: 'google',
+		async_thunk_route: 'auth/google',
+	},
+	yandex: {
+		url: `${process.env.REACT_APP_API_URL}/auth/yandex`,
+		fetch_name: 'yandex',
+		async_thunk_route: 'auth/yandex',
+	},
 	login: {
-		url: `${process.env.REACT_APP_API_URL}/Auth/login`,
+		url: `${process.env.REACT_APP_API_URL}/auth/login`,
 		fetch_name: 'login',
 		async_thunk_route: 'auth/login',
 	},

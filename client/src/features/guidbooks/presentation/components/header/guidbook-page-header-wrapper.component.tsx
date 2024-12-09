@@ -77,10 +77,10 @@ export const GuidbookPageHeaderWrapper = memo(
 					<div className="flex flex-row justify-end gap-[30px] pb-[25px] pr-[16px] pt-[12px]">
 						{formType !== HeaderFormTypes.filter && (
 							<Button
-								className="bg-background-button-secondaryflex group w-fit flex-row items-center gap-[4px] border border-solid border-primary px-[16px] py-[6px] group-hover:bg-primary"
+								className="bg-background-button-secondaryflex border-primary group-hover:bg-primary group w-fit flex-row items-center gap-[4px] border border-solid px-[16px] py-[6px]"
 								onClick={onSave}
 							>
-								<p className="border-primary font-sans text-base font-semibold leading-4 text-primary group-hover:text-white">
+								<p className="border-primary text-primary font-sans text-base font-semibold leading-4 group-hover:text-white">
 									{formType === HeaderFormTypes.add
 										? 'Сохранить'
 										: 'Сохранить изменения'}
@@ -88,13 +88,13 @@ export const GuidbookPageHeaderWrapper = memo(
 							</Button>
 						)}
 						<Button
-							className="group flex w-fit flex-row items-center gap-[4px] border border-solid border-primary bg-background-button-secondary px-[16px] py-[6px] group-hover:bg-primary"
+							className="border-primary group-hover:bg-primary group flex w-fit flex-row items-center gap-[4px] border border-solid bg-background-button-secondary px-[16px] py-[6px]"
 							onClick={
 								formType === HeaderFormTypes.filter ? onClearHandle : onCancelHandle
 							}
 						>
 							<CleanUpIcon width={'16px'} height={'16px'} />
-							<p className="border-primary font-sans text-base font-semibold leading-4 text-primary group-hover:text-white">
+							<p className="border-primary text-primary font-sans text-base font-semibold leading-4 group-hover:text-white">
 								{formType === HeaderFormTypes.filter ? 'Очистить' : 'Отмена'}
 							</p>
 						</Button>

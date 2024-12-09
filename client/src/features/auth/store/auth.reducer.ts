@@ -14,6 +14,7 @@ const actions = new Map<ActionType, MapFnc>([
 	[
 		AUTH_ACTIONS.SET_INVALID_DATA,
 		(data: AuthSliceDataState, payload: boolean) => {
+			console.log(payload);
 			return { ...data, invalid_data: payload };
 		},
 	],

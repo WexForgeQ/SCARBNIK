@@ -21,5 +21,12 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions)
 
 module.exports = (app) => {
+  // Маршрут для просмотра документации через Swagger UI
   app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+
+  // Маршрут для получения документации в формате JSON
+  app.get('/swagger.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json')
+    res.send(swaggerDocs)
+  })
 }

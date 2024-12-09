@@ -6,6 +6,7 @@ const ApiError = require('../errors/ApiError')
 const sequelize = require('../db')
 const nodemailer = require('nodemailer')
 const { response } = require('express')
+const e = require('express')
 require('dotenv').config()
 
 const transporter = nodemailer.createTransport({
@@ -21,7 +22,7 @@ const generateJwt = (email, role) => {
     expiresIn: 10
   })
   const refresh_token = jwt.sign({ email, role }, process.env.SECRET_KEY, {
-    expiresIn: '24h'
+    expiresIn: '7d'
   })
   const data = { access_token, refresh_token }
   return data
@@ -29,14 +30,14 @@ const generateJwt = (email, role) => {
 
 const generateVerificationToken = (email, userId) => {
   return jwt.sign({ email, userId }, process.env.SECRET_KEY, {
-    expiresIn: '1h'
+    expiresIn: '24h'
   })
 }
 
 class AuthController {
   async registration(req, res, next) {
     try {
-      const { email, username, password } = req.body
+      const { email, login, password } = req.body
       const hashPassword = await bcrypt.hash(password, 2)
       const candidate = await User.findOne({ where: { email } })
       if (candidate) {
@@ -44,13 +45,27 @@ class AuthController {
           ApiError.badRequest('Пользователь с таким email уже существует.')
         )
       }
+      const candidate2 = await User.findOne({ where: { login } })
+      if (candidate2) {
+        return next(
+          ApiError.badRequest('Пользователь с таким логином уже существует.')
+        )
+      }
       const user = await User.create({
         id: crypto.randomUUID(),
         email,
-        login: username,
+        login: login,
         password: hashPassword,
         role: 2
       })
+      await UserProfile.create({
+        id: crypto.randomUUID(),
+        user_id: user.id,
+        fio: 'default',
+        phone: 'default',
+        registration_date: sequelize.literal('CURRENT_TIMESTAMP')
+      })
+
       const verificationToken = generateVerificationToken(email, user.id)
       const verificationLink = `https://localhost:5000/api/auth/verify-email?token=${verificationToken}`
       const mailOptions = {
@@ -81,26 +96,17 @@ class AuthController {
       const user = await User.findOne({
         where: { id: decoded.userId, email: decoded.email }
       })
+      console.log(user)
       if (!user) {
         return next(ApiError.badRequest('Пользователь не найден.'))
       }
-      const tokens = generateJwt(user.email, user.role)
       await User.update(
         {
-          access_token: tokens.access_token,
-          refresh_token: tokens.refresh_token,
           isApproved: true
         },
         { where: { id: user.id } }
       )
-      await UserProfile.create({
-        id: crypto.randomUUID(),
-        user_id: user.id,
-        fio: 'default',
-        phone: 'default',
-        registration_date: sequelize.literal('CURRENT_TIMESTAMP')
-      })
-      return res.status(200).json({ tokens, userid: user.id, role: user.role })
+      return res.redirect('http://localhost:3000/auth/email-verification')
     } catch (error) {
       return next(
         ApiError.badRequest('Неверная или истекшая ссылка подтверждения.')
@@ -114,6 +120,9 @@ class AuthController {
       const user = await User.findOne({ where: { email } })
       if (!user) {
         return next(ApiError.badRequest('Пользователь не найден'))
+      }
+      if (!user.isApproved) {
+        return next(ApiError.badRequest('Аккаунт не подтвержден'))
       }
       let comparePassword = bcrypt.compareSync(password, user.password)
       if (!comparePassword) {
@@ -132,10 +141,29 @@ class AuthController {
           }
         }
       )
-      return res
-        .status(200)
-        .json({ tokenData, userid: user.id, role: user.role })
+
+      res.cookie('accessToken', tokenData.accessToken, {
+        maxAge: 24 * 60 * 60 * 1000, // 1 день в миллисекундах
+        httpOnly: true, // Доступ только через HTTP
+        secure: process.env.NODE_ENV === 'production', // Устанавливаем secure флаг в продакшене
+        sameSite: 'lax', // Lax для защиты от CSRF
+        path: '/', // Устанавливаем путь для куки
+        domain: 'localhost' // Укажите ваш домен здесь
+      })
+
+      res.cookie('refreshToken', tokenData.refreshToken, {
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней в миллисекундах
+        httpOnly: true, // Доступ только через HTTP
+        secure: process.env.NODE_ENV === 'production', // Устанавливаем secure флаг в продакшене
+        sameSite: 'lax', // Lax для защиты от CSRF
+        path: '/', // Устанавливаем путь для куки
+        domain: 'localhost' // Укажите ваш домен здесь
+      })
+
+      console.log(res)
+      return res.status(200).json()
     } catch (error) {
+      console.log(error)
       return next(ApiError.internal('Внутренняя ошибка'))
     }
   }

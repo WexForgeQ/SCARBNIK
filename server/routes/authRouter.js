@@ -7,7 +7,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 const errorMiddleware = require('../middleware/errorMiddleware')
 
 const corsOptions = {
-  origin: 'https://localhost:5000', // Замените на ваш домен
+  origin: '*', // Замените на ваш домен
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204
@@ -75,7 +75,7 @@ router.get(
   '/google/callback',
   cors(corsOptions),
   passport.authenticate('google', {
-    failureRedirect: '/login'
+    failureRedirect: 'http://localhost:3000/auth/login'
   }),
   errorMiddleware,
   (req, res) => {

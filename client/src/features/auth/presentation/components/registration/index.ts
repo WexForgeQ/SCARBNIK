@@ -1,2 +1,2 @@
-export * from './code-confirm-page.component';
-export * from './company-registration-page';
+export * from './email-verification-page.component';
+export * from './registration-page';

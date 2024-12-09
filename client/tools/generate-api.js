@@ -1,7 +1,7 @@
 const generateApi = require('swagger-typescript-api').generateApi;
 require('dotenv').config();
 
-const apiUrl = `${process.env.REACT_APP_API_URL}/swagger/v1/swagger.json`;
+const apiUrl = `${process.env.REACT_APP_API_URL}/swagger.json`;
 // const apiUrl = 'http://192.168.10.23:5001/swagger/v1/swagger.json';
 if (!apiUrl) {
 	console.error('API URL is not defined in .env file');

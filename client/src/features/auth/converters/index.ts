@@ -1,1 +1,1 @@
-export * from './model.converter';
+export {};

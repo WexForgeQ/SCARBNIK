@@ -171,7 +171,7 @@ export const Select = memo((props: SelectProps) => {
 					>
 						<div
 							className={twMerge(
-								'border-input-border flex w-full cursor-pointer truncate rounded-t-lg border-[1px] border-b-0 border-solid px-[12px] py-[6px] text-base font-normal leading-6 hover:bg-primary hover:text-white',
+								'border-input-border hover:bg-primary flex w-full cursor-pointer truncate rounded-t-lg border-[1px] border-b-0 border-solid px-[12px] py-[6px] text-base font-normal leading-6 hover:text-white',
 								selectedAll ? 'bg-primary text-white' : '',
 								props.optionClassName,
 							)}
@@ -183,7 +183,7 @@ export const Select = memo((props: SelectProps) => {
 							<div
 								key={option.id}
 								className={twMerge(
-									'last:rounded-b-lf border-input-border flex w-full cursor-pointer truncate border-[1px] border-solid px-[12px] py-[6px] text-base font-normal leading-6 last:rounded-b-lg last:border-t-0 hover:bg-primary hover:text-white',
+									'last:rounded-b-lf border-input-border hover:bg-primary flex w-full cursor-pointer truncate border-[1px] border-solid px-[12px] py-[6px] text-base font-normal leading-6 last:rounded-b-lg last:border-t-0 hover:text-white',
 									selected.find((o) => o.id === option.id)
 										? 'bg-primary text-white'
 										: '',

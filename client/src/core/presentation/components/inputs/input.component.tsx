@@ -71,7 +71,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 									ref={ref}
 									disabled={props.disabled}
 									className={twMerge(
-										`text-value-black h-[40px] w-full rounded-[8px] border-none px-[16px] py-[10px] font-raleway text-[14px] font-normal ring-1 ring-inset ring-input-border-primary placeholder:text-input-label-primary focus:ring-2 focus:ring-inset focus:ring-primary focus-visible:outline-none`,
+										`text-value-black focus:ring-primary h-[40px] w-full rounded-[8px] border-none px-[16px] py-[10px] font-raleway text-[14px] font-normal ring-1 ring-inset ring-input-border-primary placeholder:text-input-label-primary focus:ring-2 focus:ring-inset focus-visible:outline-none`,
 										Icon && iconPos === 'right' && 'pr-12',
 										Icon && iconPos === 'left' && 'pl-12',
 										isLoading && `animate-pulse`,
@@ -90,11 +90,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 							ref={ref}
 							disabled={props.disabled}
 							className={twMerge(
-								`text-value-black h-[40px] w-full rounded-[8px] border-none px-[16px] py-[10px] font-raleway text-[14px] font-normal ring-1 ring-inset ring-input-border-primary placeholder:text-input-label-primary focus:ring-2 focus:ring-inset focus:ring-primary focus-visible:outline-none`,
+								`text-value-black focus:ring-primary h-[40px] w-full rounded-[8px] border-none px-[16px] py-[10px] font-raleway text-[14px] font-normal ring-1 ring-inset ring-input-border-primary placeholder:text-input-label-primary focus:ring-2 focus:ring-inset focus-visible:outline-none`,
+								inputClassName,
 								Icon && iconPos === 'right' && 'pr-12',
 								Icon && iconPos === 'left' && 'pl-12',
 								isLoading && `animate-pulse`,
-								inputClassName,
+
 								errorHighlight && 'bg-error',
 								error ? 'ring-error focus:ring-error' : '',
 							)}

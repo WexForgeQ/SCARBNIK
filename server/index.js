@@ -12,14 +12,12 @@ const passport = require('./controllers/passportController')
 
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:3000',
     // Разрешить все источники
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    // Разрешить все методы
-    allowedHeaders: '*',
-    // Разрешить все заголовки
-    credentials: true
+    credentials: true,
     // Разрешить обмен учетными данными
+    allowedHeaders: ['Content-Type', 'Authorization']
   })
 )
 
@@ -56,16 +54,16 @@ const startserver = async () => {
     await sequelize.authenticate()
     await sequelize.sync()
     const httpsServer = https.createServer(options, app)
-    app.listen(PORT, () => {
-      console.log('HTTP Server is running on port', PORT)
-    })
-    // httpsServer.listen(PORT, (err) => {
-    //   if (err) {
-    //     console.log(err)
-    //   }
-    //   const server = httpsServer.address()
-    //   console.log('HTTPS Server is running on port', PORT)
+    // app.listen(PORT, () => {
+    //   console.log('HTTP Server is running on port', PORT)
     // })
+    httpsServer.listen(PORT, (err) => {
+      if (err) {
+        console.log(err)
+      }
+      const server = httpsServer.address()
+      console.log('HTTPS Server is running on port', PORT)
+    })
   } catch (e) {
     console.log(e)
   }

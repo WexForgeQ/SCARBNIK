@@ -36,7 +36,6 @@ export function createAsyncCases<T extends SliceInitialState>(
 	const handleError = (state: Draft<T>, action: PayloadAction<any>) => {
 		state.fetch_data = null;
 		state.error = 'Unknown error';
-
 		if ('error' in action.payload) {
 			state.error = action.payload.error;
 		} else if ('message' in action.payload) {

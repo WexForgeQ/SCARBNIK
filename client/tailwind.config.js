@@ -10,7 +10,12 @@ module.exports = {
 				sans: ['Source Sans Pro', 'sans-serif'],
 			},
 			colors: {
-				primary: '#2175F3',
+				primary: {
+					green: '#779556',
+					darkBrown: '#262421',
+					sand: '#EBECD0',
+					brown: '#3C3B39',
+				},
 				gray: {
 					navHeader: '#F5F6F7',
 					navBg: '#F9F9F9',

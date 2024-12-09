@@ -7,7 +7,8 @@ export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
 }
 
 const BUTTON_VARIANTS = {
-	primary: 'px-[30px] py-[11px] shadow-sm text-white bg-primary enabled:hover:bg-primary/90',
+	primary:
+		'px-[30px] py-[11px] shadow-sm text-white bg-primary-green enabled:hover:bg-primary/90',
 	// secondary: 'text-blue-yankees bg-gray-isabelline enabled:hover:bg-gray-isabellne/70',
 	// outline:
 	// 	'esm:px-4 px-2 shadow-sm text-primary bg-white-flash enabled:hover:bg-white-flash/70 border border-primary',
@@ -27,7 +28,7 @@ export const Button = memo(
 			<button
 				disabled={rest.disabled}
 				className={twMerge(
-					`flex-center text-semibold gap-1 whitespace-nowrap rounded-lg font-sans text-[14px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50`,
+					`flex-center text-semibold focus-visible:outline-primary gap-1 whitespace-nowrap rounded-lg font-sans text-[14px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50`,
 					BUTTON_VARIANTS[variant],
 					!buttonIcon ? 'py-1.5' : 'px-0',
 					className,

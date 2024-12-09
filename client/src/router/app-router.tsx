@@ -11,12 +11,12 @@ export const AppRouter = () => {
 				<Route path={APP_ROUTES.auth.route} element={APP_ROUTES.auth.element}>
 					<Route path={AUTH_ROUTES.login.route} element={AUTH_ROUTES.login.element} />
 					<Route
-						path={AUTH_ROUTES.code_approve.route}
-						element={AUTH_ROUTES.code_approve.element}
+						path={AUTH_ROUTES.email_approve.route}
+						element={AUTH_ROUTES.email_approve.element}
 					/>
 					<Route
-						path={AUTH_ROUTES.company_registration.route}
-						element={AUTH_ROUTES.company_registration.element}
+						path={AUTH_ROUTES.registration.route}
+						element={AUTH_ROUTES.registration.element}
 					/>
 				</Route>
 				<Route path={APP_ROUTES.home.route} element={APP_ROUTES.home.element}>

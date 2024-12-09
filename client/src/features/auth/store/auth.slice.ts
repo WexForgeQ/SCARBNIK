@@ -1,13 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { toast } from 'sonner';
 import { createAsyncCases, SliceInitialState } from '../../../core/utils/fetch/create-cases.util';
-import {
-	authLogin,
-	authRegistration,
-	fileUpload,
-	logout,
-	smsCodeApprove,
-	smsCodeRequest,
-} from '../services';
+import { authGoogle, authLogin, authRegistration } from '../services';
 import { authReducer } from './auth.reducer';
 
 export interface AuthSliceDataState {
@@ -52,23 +46,37 @@ export const authSlice = createSlice({
 		authReducer,
 	},
 	extraReducers: (builder) => {
-		createAsyncCases(builder, authLogin, (state: AuthSliceState, action) =>
-			console.log(action.payload),
+		createAsyncCases(
+			builder,
+			authLogin,
+			(state: AuthSliceState, action) => {
+				toast.success('Успешный вход');
+				// console.log(action.payload);
+				// localStorage.setItem('access_token', action.payload.payload.tokenData.access_token);
+				// localStorage.setItem(
+				// 	'refresh_token',
+				// 	action.payload.payload.tokenData.refresh_token,
+				// );
+			},
+			(state: AuthSliceState, action) => toast.error(state.error),
 		);
-		createAsyncCases(builder, smsCodeRequest, (state: AuthSliceState, action) => {
-			console.log(action.payload);
-		});
-		createAsyncCases(builder, smsCodeApprove, (state: AuthSliceState, action) => {
-			console.log(action.payload);
-		});
-		createAsyncCases(builder, authRegistration, (state: AuthSliceState, action) => {
-			console.log(action.payload);
-		});
-		createAsyncCases(builder, fileUpload, (state: AuthSliceState, action) => {
-			console.log(action.payload);
-		});
-		createAsyncCases(builder, logout, (state: AuthSliceState, action) => {
-			console.log(action.payload);
-		});
+		createAsyncCases(builder, authGoogle);
+		// createAsyncCases(builder, smsCodeApprove, (state: AuthSliceState, action) => {
+		// 	console.log(action.payload);
+		// });
+		createAsyncCases(
+			builder,
+			authRegistration,
+			(state: AuthSliceState, action) => {
+				toast.success(action.payload.payload.message);
+			},
+			(state: AuthSliceState, action) => toast.error(state.error),
+		);
+		// createAsyncCases(builder, fileUpload, (state: AuthSliceState, action) => {
+		// 	console.log(action.payload);
+		// });
+		// createAsyncCases(builder, logout, (state: AuthSliceState, action) => {
+		// 	console.log(action.payload);
+		// });
 	},
 });
