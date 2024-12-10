@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { AUTH_FETCH_ROUTES, AUTH_ROUTES } from '../../../constants';
-import { authGoogle, authLogin } from '../../../services';
+import { authLogin } from '../../../services';
 import { LoginFormData } from '../../../types';
 import { LoginFormDataConfig } from '../../../utils';
 
@@ -89,10 +89,14 @@ export const LoginPage = () => {
 							<span className="mx-4 flex-shrink text-primary-sand">Или</span>
 							<div className="flex-grow border-[2px] border-primary-brown"></div>
 						</div>
+					</div>
+				</form>
+				<form action={`${process.env.REACT_APP_API_URL}/api/auth/google`} method="get">
+					<div className="flex flex-col gap-[24px]">
 						<Button
 							variant="primary"
+							type="submit"
 							className="flex h-[50px] items-center bg-primary-brown"
-							onClick={() => dispatch(authGoogle())}
 						>
 							<GoogleIcon className="h-[25px] w-[25px]" />
 							<div className="flex w-full items-center justify-center">
@@ -101,6 +105,10 @@ export const LoginPage = () => {
 								</p>
 							</div>
 						</Button>
+					</div>
+				</form>
+				<form action={`${process.env.REACT_APP_API_URL}/api/auth/yandex`} method="get">
+					<div className="flex flex-col gap-[24px]">
 						<Button
 							variant="primary"
 							type="submit"

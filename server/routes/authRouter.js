@@ -7,10 +7,15 @@ const authMiddleware = require('../middleware/authMiddleware')
 const errorMiddleware = require('../middleware/errorMiddleware')
 
 const corsOptions = {
-  origin: '*', // Замените на ваш домен
+  origin: 'https://localhost:3000', // Замените на ваш домен
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'Access-Control-Allow-Origin'
+  ]
 }
 
 /**
@@ -75,13 +80,23 @@ router.get(
   '/google/callback',
   cors(corsOptions),
   passport.authenticate('google', {
-    failureRedirect: 'http://localhost:3000/auth/login'
+    failureRedirect: 'https://localhost:3000/auth/login'
   }),
   errorMiddleware,
   (req, res) => {
-    // Возвращаем токены и данные пользователя на клиент
     const { user, access_token, refresh_token } = req.user
-    res.json({ user, access_token, refresh_token })
+    res.cookie('accessToken', access_token, {
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true
+    })
+    res.cookie('refreshToken', refresh_token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true
+    })
+    res.setHeader('Access-Control-Allow-Origin', 'https://localhost:3000')
+    res.redirect('https://localhost:3000/')
   }
 )
 
@@ -147,7 +162,18 @@ router.get(
   errorMiddleware,
   (req, res) => {
     const { user, access_token, refresh_token } = req.user
-    res.json({ user, access_token, refresh_token })
+    res.cookie('accessToken', access_token, {
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true
+    })
+    res.cookie('refreshToken', refresh_token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true
+    })
+    res.setHeader('Access-Control-Allow-Origin', 'https://localhost:3000')
+    res.redirect('https://localhost:3000/')
   }
 )
 

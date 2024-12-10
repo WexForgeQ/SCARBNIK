@@ -12,12 +12,15 @@ const passport = require('./controllers/passportController')
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
-    // Разрешить все источники
+    origin: 'https://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-    // Разрешить обмен учетными данными
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Credentials'
+    ]
   })
 )
 

@@ -142,22 +142,16 @@ class AuthController {
         }
       )
 
-      res.cookie('accessToken', tokenData.accessToken, {
-        maxAge: 24 * 60 * 60 * 1000, // 1 день в миллисекундах
-        httpOnly: true, // Доступ только через HTTP
-        secure: process.env.NODE_ENV === 'production', // Устанавливаем secure флаг в продакшене
-        sameSite: 'lax', // Lax для защиты от CSRF
-        path: '/', // Устанавливаем путь для куки
-        domain: 'localhost' // Укажите ваш домен здесь
+      res.cookie('accessToken', tokenData.access_token, {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true
       })
 
-      res.cookie('refreshToken', tokenData.refreshToken, {
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней в миллисекундах
-        httpOnly: true, // Доступ только через HTTP
-        secure: process.env.NODE_ENV === 'production', // Устанавливаем secure флаг в продакшене
-        sameSite: 'lax', // Lax для защиты от CSRF
-        path: '/', // Устанавливаем путь для куки
-        domain: 'localhost' // Укажите ваш домен здесь
+      res.cookie('refreshToken', tokenData.refresh_token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true
       })
 
       console.log(res)
