@@ -96,7 +96,6 @@ class AuthController {
       const user = await User.findOne({
         where: { id: decoded.userId, email: decoded.email }
       })
-      console.log(user)
       if (!user) {
         return next(ApiError.badRequest('Пользователь не найден.'))
       }
@@ -153,8 +152,6 @@ class AuthController {
         httpOnly: true,
         secure: true
       })
-
-      console.log(res)
       return res.status(200).json()
     } catch (error) {
       console.log(error)
@@ -175,6 +172,12 @@ class AuthController {
             where: { access_token: access }
           }
         )
+        res.clearCookie('accessToken', {
+          httpOnly: true
+        })
+        res.clearCookie('refreshToken', {
+          httpOnly: true
+        })
         res.status(200).json(access)
       }
     } catch (error) {

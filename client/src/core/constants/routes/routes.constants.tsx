@@ -1,4 +1,4 @@
-import { AuthorizationScreen, HomeScreen } from '@features';
+import { AuthorizationScreen, HomeScreen, LandingScreen } from '@features';
 
 export const APP_ROUTES = {
 	auth: {
@@ -6,7 +6,11 @@ export const APP_ROUTES = {
 		element: <AuthorizationScreen />,
 	},
 	home: {
-		route: '/',
+		route: '/profile',
 		element: <HomeScreen />,
+	},
+	landing: {
+		route: '/',
+		element: <LandingScreen />,
 	},
 };

@@ -1,5 +1,5 @@
 import { APP_ROUTES } from '@core';
-import { AUTH_ROUTES, HOME_ROUTES } from '@features';
+import { AUTH_ROUTES, HOME_ROUTES, LANDING_ROUTES } from '@features';
 import { Provider } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { store } from '../core/store';
@@ -17,6 +17,13 @@ export const AppRouter = () => {
 					<Route
 						path={AUTH_ROUTES.registration.route}
 						element={AUTH_ROUTES.registration.element}
+					/>
+				</Route>
+				<Route path={APP_ROUTES.landing.route} element={APP_ROUTES.landing.element}>
+					<Route path={LANDING_ROUTES.home.route} element={LANDING_ROUTES.home.element} />
+					<Route
+						path={LANDING_ROUTES.orders.route}
+						element={LANDING_ROUTES.orders.element}
 					/>
 				</Route>
 				<Route path={APP_ROUTES.home.route} element={APP_ROUTES.home.element}>

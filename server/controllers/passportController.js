@@ -104,7 +104,6 @@ passport.use(
       callbackURL: 'https://localhost:5000/api/auth/yandex/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
-      console.log(profile)
       try {
         const email = profile.emails[0].value
         console.log(profile.emails[0])

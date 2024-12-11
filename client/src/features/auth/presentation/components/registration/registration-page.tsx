@@ -115,30 +115,38 @@ export const RegistrationPage = () => {
 						<span className="mx-4 flex-shrink text-primary-sand">Или</span>
 						<div className="flex-grow border-[2px] border-primary-brown"></div>
 					</div>
-					<Button
-						variant="primary"
-						type="submit"
-						className="flex h-[50px] items-center bg-primary-brown"
-					>
-						<GoogleIcon className="h-[25px] w-[25px]" />
-						<div className="flex w-full items-center justify-center">
-							<p className="text-center text-[15px] text-white">
-								Регистрация используя Google
-							</p>
+					<form action={`${process.env.REACT_APP_API_URL}/api/auth/google`} method="get">
+						<div className="flex flex-col gap-[24px]">
+							<Button
+								variant="primary"
+								type="submit"
+								className="flex h-[50px] items-center bg-primary-brown"
+							>
+								<GoogleIcon className="h-[25px] w-[25px]" />
+								<div className="flex w-full items-center justify-center">
+									<p className="text-center text-[20px] text-black">
+										Войти используя Google
+									</p>
+								</div>
+							</Button>
 						</div>
-					</Button>
-					<Button
-						variant="primary"
-						type="submit"
-						className="flex h-[50px] items-center bg-primary-brown"
-					>
-						<YandexIcon className="h-[25px] w-[25px]" />
-						<div className="flex w-full items-center justify-center">
-							<p className="font-600 text-center text-[15px] text-white">
-								Регистрация используя Яндекс
-							</p>
+					</form>
+					<form action={`${process.env.REACT_APP_API_URL}/api/auth/yandex`} method="get">
+						<div className="flex flex-col gap-[24px]">
+							<Button
+								variant="primary"
+								type="submit"
+								className="flex h-[50px] items-center bg-primary-brown"
+							>
+								<YandexIcon className="h-[25px] w-[25px]" />
+								<div className="flex w-full items-center justify-center">
+									<p className="font-600 m-auto w-fit text-center text-[20px] text-black">
+										Войти используя Яндекс
+									</p>
+								</div>
+							</Button>
 						</div>
-					</Button>
+					</form>
 					<div className="flex items-center justify-center gap-[2px] font-sans text-[14px]">
 						<p>Есть аккаунт?</p>
 						<p

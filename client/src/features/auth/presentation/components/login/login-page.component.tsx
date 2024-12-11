@@ -74,7 +74,7 @@ export const LoginPage = () => {
 							type={showPassword ? 'password' : 'text'}
 							placeholder="Введите пароль"
 							Icon={showPassword ? IoMdEyeOff : IoMdEye}
-							iconClassName="text-input-label-primary"
+							iconClassName="text-primary-brown"
 							iconPos="right"
 							onIconClick={() => setShowPassword(!showPassword)}
 							{...form.register('password')}
@@ -100,7 +100,7 @@ export const LoginPage = () => {
 						>
 							<GoogleIcon className="h-[25px] w-[25px]" />
 							<div className="flex w-full items-center justify-center">
-								<p className="text-center text-[15px] text-white">
+								<p className="text-center text-[20px] text-black">
 									Войти используя Google
 								</p>
 							</div>
@@ -116,7 +116,7 @@ export const LoginPage = () => {
 						>
 							<YandexIcon className="h-[25px] w-[25px]" />
 							<div className="flex w-full items-center justify-center">
-								<p className="font-600 text-center text-[15px] text-white">
+								<p className="font-600 m-auto w-fit text-center text-[20px] text-black">
 									Войти используя Яндекс
 								</p>
 							</div>
