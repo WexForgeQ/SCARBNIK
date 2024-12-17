@@ -11,7 +11,11 @@ class UserController {
         ...req.body,
         id: crypto.randomUUID()
       })
-      return res.status(201).json(user)
+      return res.status(201).json({
+        ...user.toJSON(),
+        access_token: undefined,
+        refresh_token: undefined
+      })
     } catch (error) {
       return res.status(400).json({ error: error.message })
     }
@@ -40,7 +44,11 @@ class UserController {
       if (!user) {
         return res.status(200).json()
       }
-      return res.status(200).json(user)
+      return res.status(200).json({
+        ...user.toJSON(),
+        access_token: undefined,
+        refresh_token: undefined
+      })
     } catch (error) {
       return res.status(200).json()
     }
@@ -54,7 +62,11 @@ class UserController {
       if (!user) {
         throw ApiError.notFound('Пользователь не найден')
       }
-      return res.status(200).json(user)
+      return res.status(200).json({
+        ...user.toJSON(),
+        access_token: undefined,
+        refresh_token: undefined
+      })
     } catch (error) {
       return res.status(error.status || 400).json({ error: error.message })
     }
@@ -71,7 +83,11 @@ class UserController {
       const updatedUser = await User.findByPk(req.params.id, {
         include: [{ model: UserProfile }]
       })
-      return res.status(200).json(updatedUser)
+      return res.status(200).json({
+        ...updatedUser.toJSON(),
+        access_token: undefined,
+        refresh_token: undefined
+      })
     } catch (error) {
       return res.status(error.status || 400).json({ error: error.message })
     }

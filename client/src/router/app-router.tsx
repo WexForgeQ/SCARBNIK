@@ -1,8 +1,9 @@
 import { APP_ROUTES } from '@core';
-import { AUTH_ROUTES, HOME_ROUTES, LANDING_ROUTES } from '@features';
+import { AUTH_ROUTES, LANDING_ROUTES } from '@features';
 import { Provider } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { store } from '../core/store';
+import { PROFILE_ROUTES } from '../features/profile/constants/routes/profile-routes';
 
 export const AppRouter = () => {
 	return (
@@ -25,8 +26,12 @@ export const AppRouter = () => {
 						path={LANDING_ROUTES.orders.route}
 						element={LANDING_ROUTES.orders.element}
 					/>
+					<Route
+						path={PROFILE_ROUTES.profile.route}
+						element={PROFILE_ROUTES.profile.element}
+					/>
 				</Route>
-				<Route path={APP_ROUTES.home.route} element={APP_ROUTES.home.element}>
+				{/* <Route path={APP_ROUTES.home.route} element={APP_ROUTES.home.element}>
 					<Route path={HOME_ROUTES.main.route} element={HOME_ROUTES.main.element} />
 					<Route
 						path={HOME_ROUTES.constructor.route}
@@ -77,7 +82,7 @@ export const AppRouter = () => {
 					</Route>
 					<Route path={HOME_ROUTES.news.route} element={HOME_ROUTES.news.element} />
 					<Route path={HOME_ROUTES.reports.route} element={HOME_ROUTES.reports.element} />
-				</Route>
+				</Route> */}
 			</Routes>
 		</Provider>
 	);

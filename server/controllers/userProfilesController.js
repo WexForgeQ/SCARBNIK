@@ -61,7 +61,7 @@ class UserProfileController {
 
   async read(req, res, next) {
     try {
-      const userProfile = await UserProfile.findByPk(req.params.id)
+      const userProfile = await UserProfile.findOne({ user_id: req.params.id })
       if (!userProfile) {
         return next(ApiError.notFound('Профиль пользователя не найден'))
       }
@@ -82,7 +82,7 @@ class UserProfileController {
       const [updated] = await UserProfile.update(
         { ...otherData, photo: photoUrl },
         {
-          where: { id: req.params.id }
+          where: { user_id: req.params.id }
         }
       )
 
@@ -90,7 +90,9 @@ class UserProfileController {
         return next(ApiError.notFound('Профиль пользователя не найден'))
       }
 
-      const updatedUserProfile = await UserProfile.findByPk(req.params.id)
+      const updatedUserProfile = await UserProfile.findOne({
+        user_id: req.params.id
+      })
       return res.status(200).json(updatedUserProfile)
     } catch (error) {
       console.log(error)
@@ -101,7 +103,7 @@ class UserProfileController {
   async delete(req, res, next) {
     try {
       const deleted = await UserProfile.destroy({
-        where: { id: req.params.id }
+        where: { user_id: req.params.id }
       })
       if (!deleted) {
         return next(ApiError.notFound('Профиль пользователя не найден'))

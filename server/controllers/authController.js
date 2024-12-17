@@ -131,10 +131,17 @@ class AuthController {
       if (!user.isApproved) {
         return next(ApiError.badRequest('Аккаунт не подтвержден'))
       }
-      let comparePassword = bcrypt.compareSync(password, user.password)
-      if (!comparePassword) {
-        return next(ApiError.badRequest('Неверный пароль'))
+      if (!user.isOauthProfile) {
+        let comparePassword = bcrypt.compareSync(password, user.password)
+        if (!comparePassword) {
+          return next(ApiError.badRequest('Неверный пароль'))
+        }
+      } else {
+        return next(
+          ApiError.badRequest('Войдите при помощи стороннего сервиса')
+        )
       }
+
       const tokenData = generateJwt(email, 2, user.id)
 
       await User.update(

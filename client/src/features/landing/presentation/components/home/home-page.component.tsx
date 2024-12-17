@@ -1,6 +1,8 @@
-import { Button, CoinsBanner, LandingBanner, MarksBanner } from '@core';
+import { Button, CoinsBanner, LandingBanner, MarksBanner, useAppSelector } from '@core';
 
 export const HomePageComponent = () => {
+	const userData = useAppSelector((store) => store.userData);
+
 	return (
 		<div className="flex flex-col gap-10 pb-10">
 			<div className="flex flex-col items-center gap-5">
@@ -11,17 +13,23 @@ export const HomePageComponent = () => {
 					Создавайте, управляйте, находите, меняйте и организуйте свои коллекции с
 					легкостью
 				</p>
-				<Button
-					variant="primary"
-					type="submit"
-					className="flex h-[50px] items-center bg-primary-green"
-				>
-					<div className="flex w-full items-center justify-center">
-						<p className="text-center text-[20px] text-black">
-							Начать коллекционировать
-						</p>
-					</div>
-				</Button>
+				{!userData.data.id ? (
+					<Button
+						variant="primary"
+						type="submit"
+						className="flex h-[50px] items-center bg-primary-green"
+					>
+						<div className="flex w-full items-center justify-center">
+							<p className="text-center text-[20px] text-black">
+								Начать коллекционировать
+							</p>
+						</div>
+					</Button>
+				) : (
+					<p className="text-center text-[40px] text-primary-green">
+						С возвращением {userData.data.login}!
+					</p>
+				)}
 			</div>
 			<div className="flex w-full justify-between gap-4">
 				<MarksBanner className="flex-1 basis-1/3" imageClassName="rounded-3xl" />

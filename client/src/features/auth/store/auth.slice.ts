@@ -14,7 +14,6 @@ export interface AuthSliceDataState {
 	invalid_data: boolean;
 	user_role: string;
 }
-
 export interface AuthSliceState extends SliceInitialState {
 	data: AuthSliceDataState;
 }

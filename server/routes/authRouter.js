@@ -80,11 +80,11 @@ router.get(
   '/google/callback',
   cors(corsOptions),
   passport.authenticate('google', {
-    failureRedirect: 'https://localhost:3000/auth/login'
+    failureRedirect: 'https://localhost:3000/auth/login',
+    session: false
   }),
-  errorMiddleware,
   (req, res) => {
-    const { user, access_token, refresh_token } = req.user
+    const { access_token, refresh_token } = req.user
     res.cookie('accessToken', access_token, {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
@@ -95,9 +95,9 @@ router.get(
       httpOnly: true,
       secure: true
     })
-    res.setHeader('Access-Control-Allow-Origin', 'https://localhost:3000')
     res.redirect('https://localhost:3000/')
-  }
+  },
+  errorMiddleware
 )
 
 /**
@@ -157,11 +157,15 @@ router.get(
   '/yandex/callback',
   cors(corsOptions),
   passport.authenticate('yandex', {
-    failureRedirect: '/login'
+    failureRedirect: '/login',
+    session: false
   }),
-  errorMiddleware,
   (req, res) => {
-    const { user, access_token, refresh_token } = req.user
+    if (!req.user) {
+      return res.redirect('/login')
+    }
+
+    const { access_token, refresh_token } = req.user
     res.cookie('accessToken', access_token, {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
@@ -174,7 +178,8 @@ router.get(
     })
     res.setHeader('Access-Control-Allow-Origin', 'https://localhost:3000')
     res.redirect('https://localhost:3000/')
-  }
+  },
+  errorMiddleware
 )
 
 /**

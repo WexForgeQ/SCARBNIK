@@ -46,14 +46,14 @@ passport.use(
       clientSecret: process.env.GOOGLE_SECRET_KEY,
       callbackURL: 'https://localhost:5000/api/auth/google/callback'
     },
-    async (access_token, tokens, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       let tokenData
       try {
         let user = await User.findOne({
           where: { email: profile.emails[0].value }
         })
         if (!user) {
-          let user = await User.create({
+          user = await User.create({
             id: crypto.randomUUID(),
             email: profile.emails[0].value,
             login: profile.displayName,
@@ -61,18 +61,6 @@ passport.use(
             isApproved: true,
             isOauthProfile: true
           })
-          tokenData = generateJwt(profile.emails[0].value, 2, user.id)
-          await User.update(
-            {
-              access_token: tokenData.access_token,
-              refresh_token: tokenData.refresh_token
-            },
-            {
-              where: {
-                id: user.id
-              }
-            }
-          )
           await UserProfile.create({
             id: crypto.randomUUID(),
             user_id: user.id,
@@ -80,34 +68,22 @@ passport.use(
             photo: profile.photos[0].value,
             registration_date: sequelize.literal('CURRENT_TIMESTAMP')
           })
-        } else {
-          tokenData = generateJwt(profile.emails[0].value, 2, user.id)
-          await User.update(
-            {
-              access_token: tokenData.access_token,
-              refresh_token: tokenData.refresh_token
-            },
-            {
-              where: {
-                id: user.id
-              }
-            }
-          )
-          await UserProfile.update(
-            {
-              fio: profile.displayName,
-              photo: profile.photos[0].value
-            },
-            {
-              where: {
-                user_id: user.id
-              }
-            }
-          )
         }
-        done(null, user, tokenData)
+        tokenData = generateJwt(profile.emails[0].value, 2, user.id)
+        await User.update(
+          {
+            access_token: tokenData.access_token,
+            refresh_token: tokenData.refresh_token
+          },
+          { where: { id: user.id } }
+        )
+        done(null, {
+          user,
+          access_token: tokenData.access_token,
+          refresh_token: tokenData.refresh_token
+        })
       } catch (err) {
-        ApiError.badRequest('Ошибка:', err)
+        console.log(err)
         done(err)
       }
     }
@@ -122,10 +98,10 @@ passport.use(
       callbackURL: 'https://localhost:5000/api/auth/yandex/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
-      let tokenData
       try {
         const email = profile.emails[0].value
         let user = await User.findOne({ where: { email } })
+
         if (!user) {
           user = await User.create({
             id: crypto.randomUUID(),
@@ -135,18 +111,6 @@ passport.use(
             isApproved: true,
             isOauthProfile: true
           })
-          tokenData = generateJwt(profile.emails[0].value, 2, user.id)
-          await User.update(
-            {
-              access_token: tokenData.access_token,
-              refresh_token: tokenData.refresh_token
-            },
-            {
-              where: {
-                id: user.id
-              }
-            }
-          )
           await UserProfile.create({
             id: crypto.randomUUID(),
             user_id: user.id,
@@ -155,36 +119,31 @@ passport.use(
             registration_date: sequelize.literal('CURRENT_TIMESTAMP')
           })
         } else {
-          tokenData = generateJwt(profile.emails[0].value, 2, user.id)
-          await User.update(
-            {
-              access_token: tokenData.access_token,
-              refresh_token: tokenData.refresh_token
-            },
-            {
-              where: {
-                id: user.id
-              }
-            }
-          )
-
           await UserProfile.update(
             {
               fio: profile.displayName,
               photo: profile.photos[0] ? profile.photos[0].value : null
             },
             {
-              where: {
-                user_id: user.id
-              }
+              where: { user_id: user.id }
             }
           )
         }
 
-        done(null, user, tokenData)
+        const tokenData = generateJwt(email, 2, user.id)
+        await User.update(
+          {
+            access_token: tokenData.access_token,
+            refresh_token: tokenData.refresh_token
+          },
+          {
+            where: { id: user.id }
+          }
+        )
+
+        done(null, { user, ...tokenData })
       } catch (err) {
         console.log(err)
-        ApiError.badRequest('Ошибка:', err)
         done(err)
       }
     }
