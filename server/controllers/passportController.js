@@ -11,13 +11,21 @@ passport.serializeUser((user, done) => {
   done(null, user.id)
 })
 
-const generateJwt = (email, role) => {
-  const access_token = jwt.sign({ email, role }, process.env.SECRET_KEY, {
-    expiresIn: 10
-  })
-  const refresh_token = jwt.sign({ email, role }, process.env.SECRET_KEY, {
-    expiresIn: '24h'
-  })
+const generateJwt = (email, role, userId) => {
+  const access_token = jwt.sign(
+    { email, role, userId },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: '1h'
+    }
+  )
+  const refresh_token = jwt.sign(
+    { email, role, userId },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: '24h'
+    }
+  )
   const data = { access_token, refresh_token }
   return data
 }
@@ -39,23 +47,32 @@ passport.use(
       callbackURL: 'https://localhost:5000/api/auth/google/callback'
     },
     async (access_token, tokens, profile, done) => {
+      let tokenData
       try {
-        console.log(profile)
         let user = await User.findOne({
           where: { email: profile.emails[0].value }
         })
-        const tokenData = generateJwt(profile.emails[0].value, 2)
         if (!user) {
-          user = await User.create({
+          let user = await User.create({
             id: crypto.randomUUID(),
             email: profile.emails[0].value,
             login: profile.displayName,
-            access_token: tokenData.access_token,
-            refresh_token: tokenData.refresh_token,
             role: 2,
             isApproved: true,
             isOauthProfile: true
           })
+          tokenData = generateJwt(profile.emails[0].value, 2, user.id)
+          await User.update(
+            {
+              access_token: tokenData.access_token,
+              refresh_token: tokenData.refresh_token
+            },
+            {
+              where: {
+                id: user.id
+              }
+            }
+          )
           await UserProfile.create({
             id: crypto.randomUUID(),
             user_id: user.id,
@@ -64,6 +81,7 @@ passport.use(
             registration_date: sequelize.literal('CURRENT_TIMESTAMP')
           })
         } else {
+          tokenData = generateJwt(profile.emails[0].value, 2, user.id)
           await User.update(
             {
               access_token: tokenData.access_token,
@@ -87,7 +105,7 @@ passport.use(
             }
           )
         }
-        done(null, user, tokenData) // Передача токенов клиенту
+        done(null, user, tokenData)
       } catch (err) {
         ApiError.badRequest('Ошибка:', err)
         done(err)
@@ -104,24 +122,31 @@ passport.use(
       callbackURL: 'https://localhost:5000/api/auth/yandex/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
+      let tokenData
       try {
         const email = profile.emails[0].value
-        console.log(profile.emails[0])
         let user = await User.findOne({ where: { email } })
-        const tokenData = generateJwt(email, 2)
-
         if (!user) {
           user = await User.create({
             id: crypto.randomUUID(),
             email,
             login: profile.displayName,
-            access_token: tokenData.access_token,
-            refresh_token: tokenData.refresh_token,
             role: 2,
             isApproved: true,
             isOauthProfile: true
           })
-
+          tokenData = generateJwt(profile.emails[0].value, 2, user.id)
+          await User.update(
+            {
+              access_token: tokenData.access_token,
+              refresh_token: tokenData.refresh_token
+            },
+            {
+              where: {
+                id: user.id
+              }
+            }
+          )
           await UserProfile.create({
             id: crypto.randomUUID(),
             user_id: user.id,
@@ -130,6 +155,7 @@ passport.use(
             registration_date: sequelize.literal('CURRENT_TIMESTAMP')
           })
         } else {
+          tokenData = generateJwt(profile.emails[0].value, 2, user.id)
           await User.update(
             {
               access_token: tokenData.access_token,
@@ -155,8 +181,9 @@ passport.use(
           )
         }
 
-        done(null, user, tokenData) // Передача токенов клиенту
+        done(null, user, tokenData)
       } catch (err) {
+        console.log(err)
         ApiError.badRequest('Ошибка:', err)
         done(err)
       }

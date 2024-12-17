@@ -2,6 +2,7 @@ const { User, UserProfile } = require('../models/models')
 const ApiError = require('../errors/ApiError')
 const crypto = require('crypto')
 const { Op } = require('sequelize')
+const jwt = require('jsonwebtoken')
 
 class UserController {
   async create(req, res) {
@@ -13,6 +14,35 @@ class UserController {
       return res.status(201).json(user)
     } catch (error) {
       return res.status(400).json({ error: error.message })
+    }
+  }
+
+  async self(req, res) {
+    try {
+      const cookieHeader = req.headers.cookie
+      if (!cookieHeader) {
+        return res.status(200).json()
+      }
+      const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+        const [name, value] = cookie.split('=').map((c) => c.trim())
+        acc[name] = value
+        return acc
+      }, {})
+      const access = cookies.accessToken
+      if (!access) {
+        return res.status(200).json()
+      }
+      const userId = jwt.decode(access).userId
+      const user = await User.findOne({
+        where: { id: userId },
+        include: [{ model: UserProfile }]
+      })
+      if (!user) {
+        return res.status(200).json()
+      }
+      return res.status(200).json(user)
+    } catch (error) {
+      return res.status(200).json()
     }
   }
 

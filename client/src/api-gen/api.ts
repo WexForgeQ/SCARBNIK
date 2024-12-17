@@ -273,7 +273,7 @@ export class HttpClient<SecurityDataType = unknown> {
 	}: ApiConfig<SecurityDataType> = {}) {
 		this.instance = axios.create({
 			...axiosConfig,
-			baseURL: axiosConfig.baseURL || 'http://localhost:5000',
+			baseURL: axiosConfig.baseURL || 'https://localhost:5000',
 		});
 		this.secure = secure;
 		this.format = format;
@@ -373,7 +373,7 @@ export class HttpClient<SecurityDataType = unknown> {
 /**
  * @title Auth API
  * @version 1.0.0
- * @baseUrl http://localhost:5000
+ * @baseUrl https://localhost:5000
  *
  * API for user authentication
  */
@@ -552,7 +552,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 			>({
 				path: `/api/auth/login`,
 				method: 'POST',
-				withCredentials: true,
 				body: data,
 				type: ContentType.Json,
 				format: 'json',
@@ -560,24 +559,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 			}),
 
 		/**
-		 * No description
+		 * @description Логаут пользователя, очищает токены доступа и обновления из куки и базы данных.
 		 *
 		 * @tags Auth
-		 * @name AuthLogoutCreate
+		 * @name LogoutUser
 		 * @summary Logout a user
 		 * @request POST:/api/auth/logout
+		 * @secure
 		 */
-		authLogoutCreate: (
-			data: {
-				access?: string;
-			},
-			params: RequestParams = {},
-		) =>
-			this.request<void, void>({
+		logoutUser: (params: RequestParams = {}) =>
+			this.request<
+				{
+					/** @example "Вы успешно вышли из системы" */
+					message?: string;
+				},
+				| {
+						/** @example "Не залогинен" */
+						message?: string;
+				  }
+				| {
+						/** @example "Внутренняя ошибка" */
+						message?: string;
+				  }
+			>({
 				path: `/api/auth/logout`,
 				method: 'POST',
-				body: data,
-				type: ContentType.Json,
+				secure: true,
+				format: 'json',
 				...params,
 			}),
 
@@ -1970,6 +1978,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				method: 'POST',
 				body: data,
 				type: ContentType.Json,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * @description Получить информацию о пользователе на основе токена из куки
+		 *
+		 * @tags Users
+		 * @name UsersSelfList
+		 * @summary Получить информацию о пользователе
+		 * @request GET:/api/users/self
+		 */
+		usersSelfList: (params: RequestParams = {}) =>
+			this.request<
+				{
+					/** @example "12345" */
+					id?: string;
+					/** @example "user@example.com" */
+					email?: string;
+					UserProfile?: {
+						/** @example "John Doe" */
+						fio?: string;
+						/** @example "https://example.com/photo.jpg" */
+						photo?: string;
+					};
+				},
+				| {
+						/** @example "Не авторизован" */
+						message?: string;
+				  }
+				| {
+						/** @example "JWT verification failed" */
+						error?: string;
+				  }
+			>({
+				path: `/api/users/self`,
+				method: 'GET',
 				format: 'json',
 				...params,
 			}),

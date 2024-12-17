@@ -17,13 +17,21 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-const generateJwt = (email, role) => {
-  const access_token = jwt.sign({ email, role }, process.env.SECRET_KEY, {
-    expiresIn: 10
-  })
-  const refresh_token = jwt.sign({ email, role }, process.env.SECRET_KEY, {
-    expiresIn: '7d'
-  })
+const generateJwt = (email, role, userId) => {
+  const access_token = jwt.sign(
+    { email, role, userId },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: '1h'
+    }
+  )
+  const refresh_token = jwt.sign(
+    { email, role, userId },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: '7d'
+    }
+  )
   const data = { access_token, refresh_token }
   return data
 }
@@ -105,7 +113,7 @@ class AuthController {
         },
         { where: { id: user.id } }
       )
-      return res.redirect('http://localhost:3000/auth/email-verification')
+      return res.redirect('https://localhost:3000/auth/email-verification')
     } catch (error) {
       return next(
         ApiError.badRequest('Неверная или истекшая ссылка подтверждения.')
@@ -127,7 +135,7 @@ class AuthController {
       if (!comparePassword) {
         return next(ApiError.badRequest('Неверный пароль'))
       }
-      const tokenData = generateJwt(email, 2)
+      const tokenData = generateJwt(email, 2, user.id)
 
       await User.update(
         {
@@ -152,7 +160,7 @@ class AuthController {
         httpOnly: true,
         secure: true
       })
-      return res.status(200).json()
+      return res.status(200).json({ user_id: user.id })
     } catch (error) {
       console.log(error)
       return next(ApiError.internal('Внутренняя ошибка'))
@@ -161,25 +169,31 @@ class AuthController {
 
   async logout(req, res, next) {
     try {
-      const { access } = req.body
-      const user = await User.findOne({ where: { access_token: access } })
+      const cookieHeader = req.headers.cookie
+      if (!cookieHeader) {
+        return res.status(400).json({ message: 'Не авторизован' })
+      }
+      const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+        const [name, value] = cookie.split('=').map((c) => c.trim())
+        acc[name] = value
+        return acc
+      }, {})
+      const access = cookies.accessToken
+      if (!access) {
+        return next(ApiError.Unauthorized('Не залогинен'))
+      }
+      const userId = jwt.decode(access).userId
+      const user = await User.findOne({ where: { id: userId } })
       if (!user) {
         return next(ApiError.Unauthorized('Не залогинен'))
-      } else {
-        await User.update(
-          { access_token: null, refresh_token: null },
-          {
-            where: { access_token: access }
-          }
-        )
-        res.clearCookie('accessToken', {
-          httpOnly: true
-        })
-        res.clearCookie('refreshToken', {
-          httpOnly: true
-        })
-        res.status(200).json(access)
       }
+      await User.update(
+        { access_token: null, refresh_token: null },
+        { where: { access_token: access } }
+      )
+      res.clearCookie('accessToken', { httpOnly: true })
+      res.clearCookie('refreshToken', { httpOnly: true })
+      res.status(200).json({ message: 'Вы успешно вышли из системы' })
     } catch (error) {
       return next(ApiError.internal('Внутренняя ошибка'))
     }

@@ -10,7 +10,7 @@ export const authLogin = createAsyncThunk(
 		try {
 			const response = await fetchApi.api.authLoginCreate(loginData);
 			return {
-				payload: response.data,
+				payload: response,
 				fetch_data: {
 					group: AUTH_FETCH_ROUTES.group,
 					fetch_name: AUTH_FETCH_ROUTES.login.fetch_name,
@@ -51,6 +51,7 @@ export const authGoogle = createAsyncThunk(
 	async (_, thunkAPI) => {
 		try {
 			const response = await fetchApi.api.authGoogleList();
+
 			return {
 				payload: response.data,
 				fetch_data: {
@@ -141,23 +142,23 @@ export const authGoogle = createAsyncThunk(
 // 	},
 // );
 
-// export const logout = createAsyncThunk(
-// 	AUTH_FETCH_ROUTES.logout.async_thunk_route,
-// 	async (_, thunkAPI) => {
-// 		try {
-// 			const response = await fetchApi.api.authLogoutCreate();
-// 			return {
-// 				payload: response.data,
-// 				fetch_data: {
-// 					group: AUTH_FETCH_ROUTES.group,
-// 					fetch_name: AUTH_FETCH_ROUTES.fileUpload.fetch_name,
-// 				},
-// 			};
-// 		} catch (error) {
-// 			if (error instanceof Error) {
-// 				return thunkAPI.rejectWithValue({ error: error.message });
-// 			}
-// 			return thunkAPI.rejectWithValue({ error: 'Unknown error' });
-// 		}
-// 	},
-// );
+export const logout = createAsyncThunk(
+	AUTH_FETCH_ROUTES.logout.async_thunk_route,
+	async (_, thunkAPI) => {
+		try {
+			const response = await fetchApi.api.logoutUser();
+			return {
+				payload: response.data,
+				fetch_data: {
+					group: AUTH_FETCH_ROUTES.group,
+					fetch_name: AUTH_FETCH_ROUTES.logout.fetch_name,
+				},
+			};
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				return thunkAPI.rejectWithValue({ error: error.response?.data.message });
+			}
+			return thunkAPI.rejectWithValue({ error: 'Unknown error' });
+		}
+	},
+);

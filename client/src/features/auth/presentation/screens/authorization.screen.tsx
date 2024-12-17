@@ -5,7 +5,7 @@ export const AuthorizationScreen = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (window.location.pathname === '/auth' || '/auth/') {
+		if (window.location.pathname === '/auth') {
 			navigate('/auth/login');
 		}
 	}, []);

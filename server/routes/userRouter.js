@@ -148,6 +148,59 @@ router.get('/', UserController.listAll)
 
 /**
  * @swagger
+ * /api/users/self:
+ *   get:
+ *     summary: Получить информацию о пользователе
+ *     description: Получить информацию о пользователе на основе токена из куки
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: Информация о пользователе успешно извлечена
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   example: "12345"
+ *                 email:
+ *                   type: string
+ *                   example: "user@example.com"
+ *                 UserProfile:
+ *                   type: object
+ *                   properties:
+ *                     fio:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     photo:
+ *                       type: string
+ *                       example: "https://example.com/photo.jpg"
+ *       400:
+ *         description: Не авторизован
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Не авторизован"
+ *       401:
+ *         description: Ошибка проверки токена
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "JWT verification failed"
+ */
+router.get('/self', UserController.self)
+
+/**
+ * @swagger
  * /api/users:
  *   post:
  *     summary: Создает нового пользователя

@@ -294,23 +294,43 @@ router.post('/login', authController.login, errorMiddleware)
  *   post:
  *     summary: Logout a user
  *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               access:
- *                 type: string
+ *     description: Логаут пользователя, очищает токены доступа и обновления из куки и базы данных.
+ *     operationId: logoutUser
  *     responses:
- *       200:
- *         description: Logout successful
- *       401:
- *         description: User not logged in
- *       500:
- *         description: Internal server error
+ *       '200':
+ *         description: Успешный выход из системы
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Вы успешно вышли из системы"
+ *       '401':
+ *         description: Не авторизован
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Не залогинен"
+ *       '500':
+ *         description: Внутренняя ошибка сервера
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Внутренняя ошибка"
+ *     security:
+ *       - cookieAuth: []
  */
+
 router.post('/logout', authMiddleware, authController.logout, errorMiddleware)
 
 /**
