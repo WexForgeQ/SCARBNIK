@@ -4,11 +4,11 @@ module.exports = function (req, res, next) {
   if (req.method === 'OPTIONS') {
     return next()
   }
-
+  console.log(123)
   try {
     const cookieHeader = req.headers.cookie
     if (!cookieHeader) {
-      return res.status(400).json({ message: 'Не авторизован' })
+      return res.status(401).json({ message: 'Не авторизован' })
     }
     const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
       const [name, value] = cookie.split('=').map((c) => c.trim())
@@ -17,7 +17,7 @@ module.exports = function (req, res, next) {
     }, {})
     const token = cookies.accessToken
     if (!token || token === ' ') {
-      return res.status(400).json({ message: 'Не авторизован' })
+      return res.status(401).json({ message: 'Не авторизован' })
     }
     const decoded = jwt.verify(token, process.env.SECRET_KEY)
     req.user = decoded

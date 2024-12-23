@@ -8,4 +8,5 @@ export const fetchApi = new Api({
 		'Access-Control-Allow-Credentials': 'true',
 	},
 });
+
 export * from './api';

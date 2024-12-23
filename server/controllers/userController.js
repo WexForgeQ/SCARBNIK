@@ -27,16 +27,20 @@ class UserController {
       if (!cookieHeader) {
         return res.status(200).json()
       }
+
       const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
         const [name, value] = cookie.split('=').map((c) => c.trim())
         acc[name] = value
         return acc
       }, {})
-      const access = cookies.accessToken
-      if (!access) {
+
+      const refresh = cookies.refreshToken
+      if (!refresh) {
         return res.status(200).json()
       }
-      const userId = jwt.decode(access).userId
+
+      const userId = jwt.decode(refresh).userId
+
       const user = await User.findOne({
         where: { id: userId },
         include: [{ model: UserProfile }]

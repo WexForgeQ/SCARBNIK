@@ -55,6 +55,7 @@ class UserProfileController {
         updatedUserProfile
       })
     } catch (error) {
+      console.log(error)
       next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
   }

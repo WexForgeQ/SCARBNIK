@@ -17,9 +17,9 @@ export const LogoutHeader = () => {
 		});
 	};
 	useEffect(() => {
-		dispatch(getUserProfile(userData.data.id));
+		if (userData.data.id) dispatch(getUserProfile(userData.data.id));
 	}, [userData.data.id]);
-	console.log(userProfileData);
+
 	return (
 		<div className="flex flex-row items-center gap-[21px]">
 			{userData.data.id ? (
@@ -29,7 +29,11 @@ export const LogoutHeader = () => {
 					</p>
 					<div className="border-1 h-[50px] w-[50px] overflow-hidden rounded-full">
 						<img
-							onClick={() => navigate('/' + PROFILE_ROUTES.profile.route)}
+							onClick={() =>
+								navigate('/' + PROFILE_ROUTES.profile.route, {
+									id: userData.data.id,
+								})
+							}
 							className="h-full w-full object-cover"
 							alt={userData.data.login}
 							src={userData.data.userprofile.photo}

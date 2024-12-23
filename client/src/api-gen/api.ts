@@ -278,6 +278,26 @@ export class HttpClient<SecurityDataType = unknown> {
 		this.secure = secure;
 		this.format = format;
 		this.securityWorker = securityWorker;
+
+		this.instance.interceptors.response.use(
+			(response) => response,
+			async (error) => {
+				const originalRequest = error.config;
+				if (error.response.status === 401 && !originalRequest._retry) {
+					originalRequest._retry = true;
+					try {
+						await this.instance.post('/api/refresh', {});
+						return this.instance(originalRequest);
+					} catch (e) {
+						console.error('Ошибка обновления токена', e);
+					}
+				}
+				if (error.response.status === 400) {
+					window.location.href = 'auth/login';
+				}
+				return Promise.reject(error);
+			},
+		);
 	}
 
 	public setSecurityData = (data: SecurityDataType | null) => {
@@ -1372,7 +1392,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 		 * @summary Обновляет токены доступа и обновления
 		 * @request POST:/api/refresh
 		 */
-		refreshCreate: (data: TokenRefresh, params: RequestParams = {}) =>
+		refreshCreate: () =>
 			this.request<
 				Tokens,
 				| {
@@ -1385,10 +1405,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 			>({
 				path: `/api/refresh`,
 				method: 'POST',
-				body: data,
 				type: ContentType.Json,
 				format: 'json',
-				...params,
 			}),
 
 		/**

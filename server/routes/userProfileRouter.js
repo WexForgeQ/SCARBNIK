@@ -104,7 +104,7 @@ router.post('/', authMiddleware, UserProfileController.create, errorMiddleware)
  *                 error:
  *                   type: string
  */
-router.get('/:id', UserProfileController.read)
+router.get('/:id', authMiddleware, UserProfileController.read)
 
 /**
  * @swagger
