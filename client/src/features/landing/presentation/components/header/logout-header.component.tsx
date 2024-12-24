@@ -1,5 +1,5 @@
 import { APP_ROUTES, Button, useAppDispatch, useAppNavigate, useAppSelector } from '@core';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ImExit } from 'react-icons/im';
 import { AUTH_ROUTES, logout } from '../../../../auth';
 import { PROFILE_ROUTES } from '../../../../profile/constants/routes/profile-routes';
@@ -20,6 +20,11 @@ export const LogoutHeader = () => {
 		if (userData.data.id) dispatch(getUserProfile(userData.data.id));
 	}, [userData.data.id]);
 
+	const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+	const onProfileClick = () => {
+		setIsDropdownVisible(!isDropdownVisible);
+	};
+
 	return (
 		<div className="flex flex-row items-center gap-[21px]">
 			{userData.data.id ? (
@@ -27,17 +32,42 @@ export const LogoutHeader = () => {
 					<p className="text-sm font-normal leading-5 tracking-tight text-primary-green">
 						{userData.data.login}
 					</p>
-					<div className="border-1 h-[50px] w-[50px] overflow-hidden rounded-full">
-						<img
-							onClick={() =>
-								navigate('/' + PROFILE_ROUTES.profile.route, {
-									id: userData.data.id,
-								})
-							}
-							className="h-full w-full object-cover"
-							alt={userData.data.login}
-							src={userData.data.userprofile.photo}
-						/>
+					<div onClick={onProfileClick} className="relative">
+						<div className="border-1 h-[50px] w-[50px] overflow-hidden rounded-full">
+							<img
+								className="h-full w-full object-cover"
+								alt={userData.data.login}
+								src={userData.data.userprofile.photo}
+							/>
+							{isDropdownVisible && (
+								<div className="absolute right-0 z-10 mt-2 w-48 rounded-lg bg-primary-sand shadow-lg">
+									<ul>
+										<li
+											className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100"
+											onClick={() =>
+												navigate('/' + PROFILE_ROUTES.profile.route, {
+													id: userData.data.id,
+												})
+											}
+										>
+											Профиль
+										</li>
+										<li
+											className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100"
+											onClick={() => navigate('/my-collections')}
+										>
+											Мои коллекции{' '}
+										</li>
+										<li
+											className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100"
+											onClick={() => navigate('/favorites')}
+										>
+											Избранное
+										</li>
+									</ul>
+								</div>
+							)}
+						</div>
 					</div>
 
 					<div

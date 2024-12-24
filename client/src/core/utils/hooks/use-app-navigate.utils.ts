@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-type SearchParams = { [key: string]: string };
+type SearchParams = { [key: string]: any };
 
 /**
  * Custom hook to navigate to a specified path with query parameters.

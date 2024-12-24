@@ -144,7 +144,7 @@ router.get('/:id', authMiddleware, UserProfileController.read)
  */
 router.put(
   '/:id',
-  //authMiddleware,
+  authMiddleware,
   UserProfileController.update,
   errorMiddleware
 )
@@ -195,6 +195,7 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 router.post(
   '/upload-image',
+  authMiddleware,
   upload.single('image'),
   UserProfileController.uploadImage
 )
