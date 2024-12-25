@@ -18,7 +18,7 @@ export const LandingScreen = () => {
 		<div className="flex h-screen w-screen flex-col overflow-auto">
 			<LandingHeader />
 			<div className="flex flex-1 flex-row">
-				<div className="flex flex-1 bg-primary-brown px-[200px] pt-[30px]">
+				<div className="flex flex-1 justify-center bg-primary-brown px-[200px] py-[50px]">
 					<Outlet />
 				</div>
 			</div>

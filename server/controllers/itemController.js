@@ -1,5 +1,6 @@
 const { Item } = require('../models/models')
 const ApiError = require('../errors/ApiError')
+const { Op } = require('sequelize')
 
 class ItemController {
   async create(req, res) {
@@ -57,9 +58,15 @@ class ItemController {
       const { page = 1, limit = 10, name, owner_id } = req.query
       const offset = (page - 1) * limit
 
-      const where = name ? { name: { [Op.like]: `%${name}%` } } : {}
+      const where = {}
 
-      if (owner_id) where.owner_id = owner_id
+      if (name) {
+        where.title = { [Op.like]: `%${name}%` }
+      }
+
+      if (owner_id) {
+        where.owner_id = owner_id
+      }
 
       const items = await Item.findAll({
         where,
@@ -69,6 +76,7 @@ class ItemController {
 
       return res.status(200).json(items)
     } catch (error) {
+      console.log(error)
       throw ApiError.internal('Внутренняя ошибка сервера')
     }
   }

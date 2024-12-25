@@ -56,7 +56,15 @@ export const LogoutHeader = () => {
 											className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100"
 											onClick={() => navigate('/my-collections')}
 										>
-											Мои коллекции{' '}
+											Мои коллекции
+										</li>
+										<li
+											className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100"
+											onClick={() =>
+												navigate('/my-items', { id: userData.data.id })
+											}
+										>
+											Мои предметы
 										</li>
 										<li
 											className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100"
