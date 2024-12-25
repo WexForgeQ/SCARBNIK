@@ -1,13 +1,36 @@
 const { Item } = require('../models/models')
 const ApiError = require('../errors/ApiError')
 const { Op } = require('sequelize')
+const crypto = require('crypto')
+const sharp = require('sharp')
+const minioClient = require('../minio')
+
+const saveImageToMinIO = async (buffer) => {
+  const bucketName = 'scarbnikpictures'
+  const objectName = `photos/${crypto.randomUUID()}.png`
+  const pngBuffer = await sharp(buffer).png().toBuffer()
+  await minioClient.putObject(bucketName, objectName, pngBuffer, {
+    'Content-Type': 'image/png'
+  })
+  return `http://${minioClient.host}:${minioClient.port}/${bucketName}/${objectName}`
+}
 
 class ItemController {
   async create(req, res) {
     try {
-      const item = await Item.create({ ...req.body, id: crypto.randomUUID() })
-      return res.status(201).json(item)
+      const { title, description, owner_id, photo } = req.body
+      const imageUrl = await saveImageToMinIO(photo)
+      const item = await Item.create({
+        id: crypto.randomUUID(),
+        title,
+        description,
+        owner_id,
+        photo: imageUrl
+      })
+
+      return res.status(200).json(item)
     } catch (error) {
+      console.log(error)
       throw ApiError.badRequest(error.message)
     }
   }

@@ -34,6 +34,28 @@ export const ItemsScreen = () => {
 		}
 	};
 
+	const deleteItem = async (item_id: string) => {
+		try {
+			const response = await fetchApi.api.itemsDelete(item_id);
+
+			if (response.status === 204) {
+				if (userData.data.id) {
+					if (name) {
+						getData(userData.data.id, name);
+					} else {
+						getData(userData.data.id);
+					}
+				}
+			} else if (response.status === 401) {
+				toast.error('Не авторизован');
+			} else {
+				toast.error('Ошибка:' + response.statusText);
+			}
+		} catch (error) {
+			console.error('Произошла ошибка:', error);
+		}
+	};
+
 	useEffect(() => {
 		if (userData.data.id) {
 			if (name) {
@@ -66,7 +88,7 @@ export const ItemsScreen = () => {
 			</FormProvider>
 			<div className="flex flex-col gap-5">
 				{items.map((item) => (
-					<ItemListComponent key={item.id} item={item} />
+					<ItemListComponent onDelete={deleteItem} key={item.id} item={item} />
 				))}
 			</div>
 		</div>

@@ -1,2 +1,4 @@
 server/node_modules
 minio
+
+minio.exe server C:\minio --console-address ":9001"

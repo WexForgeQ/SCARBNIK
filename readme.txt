@@ -1,0 +1,1 @@
+minio.exe server D:\Projects\SCARBNIK\minio --console-address ":9001"     
