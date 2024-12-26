@@ -14,6 +14,7 @@ export const LogoutHeader = () => {
 	const logoutHandler = () => {
 		dispatch(logout()).then(() => {
 			dispatch(self());
+			navigate('/home');
 		});
 	};
 	useEffect(() => {

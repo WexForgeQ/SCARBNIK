@@ -16,16 +16,31 @@ const saveImageToMinIO = async (buffer) => {
 }
 
 class ItemController {
+  async itemUploadImage(req, res) {
+    try {
+      const photoBuffer = req.file.buffer
+      const imageUrl = await saveImageToMinIO(photoBuffer)
+      const [updated] = await Item.update(
+        { photo: imageUrl },
+        {
+          where: { id: req.params.id }
+        }
+      )
+      if (!updated) {
+        throw ApiError.notFound('Элемент не найден')
+      }
+      return res.status(200).json({ imageUrl })
+    } catch (error) {
+      console.log(error)
+      return res.status(400).json({ error: error.message })
+    }
+  }
+
   async create(req, res) {
     try {
-      const { title, description, owner_id, photo } = req.body
-      const imageUrl = await saveImageToMinIO(photo)
       const item = await Item.create({
         id: crypto.randomUUID(),
-        title,
-        description,
-        owner_id,
-        photo: imageUrl
+        ...req.body
       })
 
       return res.status(200).json(item)
@@ -94,7 +109,8 @@ class ItemController {
       const items = await Item.findAll({
         where,
         limit: parseInt(limit, 10),
-        offset: parseInt(offset, 10)
+        offset: parseInt(offset, 10),
+        order: [['title', 'ASC']]
       })
 
       return res.status(200).json(items)

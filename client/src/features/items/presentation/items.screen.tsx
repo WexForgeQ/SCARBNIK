@@ -1,11 +1,15 @@
 import { fetchApi, Item } from '@api-gen';
-import { Button, Input, useAppNavigate, useAppSelector } from '@core';
+import { Button, Input, useAppDispatch, useAppNavigate, useAppSelector } from '@core';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { self } from '../../user/services/user.services';
 import { ItemListComponent } from './components/item-list.component';
+import { EditItemModal } from './components/item.modal';
 
 export const ItemsScreen = () => {
+	const dispatch = useAppDispatch();
 	const userData = useAppSelector((store) => store.userData);
 	const navigate = useAppNavigate();
 	const filtersForm = useForm({
@@ -16,6 +20,10 @@ export const ItemsScreen = () => {
 	const { watch, getValues } = filtersForm;
 	const [items, setItems] = useState<Array<Item>>([]);
 	const name = watch('name');
+	const [search] = useSearchParams();
+	useEffect(() => {
+		dispatch(self());
+	}, []);
 
 	const getData = async (user_id: string, name?: string) => {
 		try {
@@ -23,7 +31,6 @@ export const ItemsScreen = () => {
 
 			if (response.status === 200) {
 				setItems(response.data);
-				console.log(response.data);
 			} else if (response.status === 401) {
 				toast.error('Не авторизован');
 			} else {
@@ -64,7 +71,7 @@ export const ItemsScreen = () => {
 				getData(userData.data.id);
 			}
 		}
-	}, [userData.data.id, name]);
+	}, [userData.data.id]);
 
 	return (
 		<div className="flex w-[1000px] flex-col justify-center gap-5 self-center">
@@ -81,16 +88,33 @@ export const ItemsScreen = () => {
 						inputClassName="bg-primary-sand text-black"
 						wrapperClassName="flex flex-row items-center gap-[20px]"
 					/>
-					<Button variant="primary" type="submit" className="h-[40px]">
+					<Button
+						variant="primary"
+						type="submit"
+						onClick={() =>
+							navigate('/my-items', { id: userData.data.id, modal: true, add: true })
+						}
+						className="h-[40px]"
+					>
 						Создать предмет
 					</Button>
 				</div>
 			</FormProvider>
 			<div className="flex flex-col gap-5">
 				{items.map((item) => (
-					<ItemListComponent onDelete={deleteItem} key={item.id} item={item} />
+					<ItemListComponent
+						getData={getData}
+						onDelete={deleteItem}
+						key={item.id}
+						item={item}
+					/>
 				))}
 			</div>
+			<EditItemModal
+				getData={getData(userData.data.id)}
+				isOpen={!!search.get('modal')}
+				isEditMode={!!search.get('edit')}
+			/>
 		</div>
 	);
 };

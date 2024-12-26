@@ -8,9 +8,10 @@ import {
 	useAppSelector,
 } from '@core';
 import { AxiosError } from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { self } from '../../../user/services/user.services';
 import { getUserProfile } from '../../services/user-profile.services';
 import { EditProfileModal } from '../modals/profile-edit.modal';
 
@@ -31,6 +32,8 @@ export const ProfileScreen = () => {
 				});
 				if (response.status === 200) {
 					dispatch(getUserProfile(userData.data.id));
+					console.log(userProfileData);
+					dispatch(self());
 				} else {
 					toast.error(response.data.message);
 				}
@@ -41,7 +44,9 @@ export const ProfileScreen = () => {
 			}
 		}
 	};
-
+	useEffect(() => {
+		dispatch(getUserProfile(userData.data.id));
+	}, [userData.data.id]);
 	const [search] = useSearchParams();
 
 	return (
@@ -55,11 +60,15 @@ export const ProfileScreen = () => {
 						<div className="flex flex-col items-center py-[20px]">
 							<img
 								className="h-[200px] w-[200px] rounded-[15px] object-cover"
-								src={userProfileData.data.photo}
+								src={userData.data.userprofile.photo}
 								alt="User profile"
 							/>
 							<p>Изменить фото профиля:</p>
-							<input type="file" onChange={handlePhotoUpload} />
+							<input
+								type="file"
+								accept=".jpg, .jpeg, .png"
+								onChange={handlePhotoUpload}
+							/>
 						</div>
 						<div className="flex flex-col gap-[10px] py-[20px] text-[20px]">
 							<div className="flex flex-row gap-[10px]">
@@ -101,7 +110,7 @@ export const ProfileScreen = () => {
 				</div>
 			</div>
 
-			<EditProfileModal isOpen={!!search.get('modal')} isEditMode={true} />
+			<EditProfileModal getData={null} isOpen={!!search.get('modal')} isEditMode={true} />
 		</div>
 	);
 };

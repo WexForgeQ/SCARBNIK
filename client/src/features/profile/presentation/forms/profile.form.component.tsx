@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { self } from '../../../user/services/user.services';
 import { getUserProfile } from '../../services/user-profile.services';
 import { ProfileFormDataConfig } from '../../utils/config';
 import { UserProfileFormData } from '../../utils/validation';
@@ -27,6 +28,7 @@ export const ProfileForm = () => {
 			if (response.status === 200) {
 				navigate('/profile', { id: userData.data.id });
 				dispatch(getUserProfile(userData.data.id));
+				dispatch(self());
 			} else if (response.status === 401) {
 				toast.error('Не авторизован');
 			} else {

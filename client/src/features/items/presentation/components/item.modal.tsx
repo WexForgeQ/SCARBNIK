@@ -2,8 +2,9 @@ import { FormHandler, Modal, useAppNavigate, useAppSelector } from '@core';
 import { useRef } from 'react';
 
 import { ModalProps } from '../../../auth';
+import { ItemForm } from './item.form';
 
-export const EditProfileModal = ({ isOpen, isEditMode }: ModalProps) => {
+export const EditItemModal = ({ isOpen, isEditMode, getData }: ModalProps) => {
 	const navigate = useAppNavigate();
 	const userData = useAppSelector((store) => store.userData);
 	const formRef = useRef<FormHandler>(null);
@@ -13,7 +14,8 @@ export const EditProfileModal = ({ isOpen, isEditMode }: ModalProps) => {
 	};
 
 	const onClose = () => {
-		navigate('/profile', { id: userData.data.id });
+		navigate('/my-items', { id: userData.data.id });
+		getData();
 	};
 
 	return (
@@ -23,7 +25,7 @@ export const EditProfileModal = ({ isOpen, isEditMode }: ModalProps) => {
 			className="bg-primary-darkBrown text-primary-sand"
 			isOpen={isOpen}
 		>
-			<ProfileForm />
+			<ItemForm />
 		</Modal>
 	);
 };

@@ -3,7 +3,7 @@ const ItemController = require('../controllers/itemController')
 const authMiddleware = require('../middleware/authMiddleware')
 const errorMiddleware = require('../middleware/errorMiddleware')
 const router = express.Router()
-
+const multer = require('multer')
 /**
  * @swagger
  * components:
@@ -199,5 +199,69 @@ router.put('/:id', authMiddleware, ItemController.update, errorMiddleware)
  *                   type: string
  */
 router.delete('/:id', authMiddleware, ItemController.delete, errorMiddleware)
+const upload = multer({ storage: multer.memoryStorage() })
+/**
+ * @swagger
+ * /api/items/upload/{id}:
+ *   post:
+ *     summary: Загружает изображение и обновляет элемент
+ *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: '12345'
+ *         description: ID элемента для обновления
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               photo:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Изображение успешно загружено и элемент обновлен
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 imageUrl:
+ *                   type: string
+ *                   example: 'http://localhost:9000/scarbnikpictures/photos/unique-id.png'
+ *       400:
+ *         description: Ошибка загрузки изображения
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 'Ошибка загрузки изображения'
+ *       404:
+ *         description: Элемент не найден
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 'Элемент не найден'
+ */
+
+router.post(
+  '/upload/:id',
+  authMiddleware,
+  upload.single('photo'),
+  ItemController.itemUploadImage
+)
 
 module.exports = router

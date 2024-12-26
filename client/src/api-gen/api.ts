@@ -1387,12 +1387,50 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 		/**
 		 * No description
 		 *
+		 * @tags Items
+		 * @name ItemsUploadCreate
+		 * @summary Загружает изображение и обновляет элемент
+		 * @request POST:/api/items/upload/{id}
+		 */
+		itemsUploadCreate: (
+			id: string,
+			data: {
+				/** @format binary */
+				photo?: File;
+			},
+			params: RequestParams = {},
+		) =>
+			this.request<
+				{
+					/** @example "http://localhost:9000/scarbnikpictures/photos/unique-id.png" */
+					imageUrl?: string;
+				},
+				| {
+						/** @example "Ошибка загрузки изображения" */
+						error?: string;
+				  }
+				| {
+						/** @example "Элемент не найден" */
+						error?: string;
+				  }
+			>({
+				path: `/api/items/upload/${id}`,
+				method: 'POST',
+				body: data,
+				type: ContentType.FormData,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
 		 * @tags Auth
 		 * @name RefreshCreate
 		 * @summary Обновляет токены доступа и обновления
 		 * @request POST:/api/refresh
 		 */
-		refreshCreate: () =>
+		refreshCreate: (data: TokenRefresh, params: RequestParams = {}) =>
 			this.request<
 				Tokens,
 				| {
@@ -1405,8 +1443,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 			>({
 				path: `/api/refresh`,
 				method: 'POST',
+				body: data,
 				type: ContentType.Json,
 				format: 'json',
+				...params,
 			}),
 
 		/**
