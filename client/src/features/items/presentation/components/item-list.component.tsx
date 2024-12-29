@@ -39,7 +39,7 @@ export const ItemListComponent = ({ item, onDelete, getData }: Props) => {
 	};
 
 	return (
-		<div className="flex h-fit w-full flex-row items-center justify-between gap-[20px] overflow-auto rounded-lg bg-primary-green px-[30px] py-[10px] scrollbar-none">
+		<div className="flex h-fit w-full flex-row items-center justify-between gap-[20px] rounded-lg bg-primary-green px-[30px] py-[10px] scrollbar-none">
 			<div className="flex flex-col">
 				{item.photo ? (
 					<img

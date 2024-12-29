@@ -6,8 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { self } from '../../../user/services/user.services';
-import { ItemFormDataConfig } from '../../utils/config';
-import { ItemFormData } from '../../utils/validation';
+
 
 export const ItemForm = (setItems: any) => {
 	const dispatch = useAppDispatch();

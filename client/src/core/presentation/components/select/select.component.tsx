@@ -31,7 +31,7 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 	errorHighlight?: boolean;
 	ref?: RefCallBack;
 	icon?: (() => JSX.Element) | IconType;
-	onChangePageSize: (value: ListOption['value']) => void;
+	onChangePageSize?: (value: ListOption['value']) => void;
 }
 
 export const Select = memo((props: SelectProps) => {

@@ -2,7 +2,7 @@ import { FormHandler, Modal, useAppNavigate, useAppSelector } from '@core';
 import { useRef } from 'react';
 
 import { ModalProps } from '../../../auth';
-import { ItemForm } from './item.form';
+import { ItemForm } from './collections.form';
 
 export const EditItemModal = ({ isOpen, isEditMode, getData }: ModalProps) => {
 	const navigate = useAppNavigate();

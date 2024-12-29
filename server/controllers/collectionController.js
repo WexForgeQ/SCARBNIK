@@ -1,4 +1,9 @@
-const { Collection, CollectionItem, Item } = require('../models/models')
+const {
+  Collection,
+  CollectionItem,
+  Item,
+  Category
+} = require('../models/models')
 const ApiError = require('../errors/ApiError')
 
 class CollectionController {
@@ -79,6 +84,7 @@ class CollectionController {
       })
       return res.status(200).json(collections)
     } catch (error) {
+      console.log(error)
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
   }

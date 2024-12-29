@@ -3,6 +3,7 @@ import { AUTH_ROUTES, LANDING_ROUTES } from '@features';
 import { Provider } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import { store } from '../core/store';
+import { COLLECCTION_ROUTES } from '../features/collections/constants';
 import { ITEMS_ROUTES } from '../features/items/constants';
 import { PROFILE_ROUTES } from '../features/profile/constants/routes/profile-routes';
 
@@ -34,6 +35,10 @@ export const AppRouter = () => {
 					<Route
 						path={ITEMS_ROUTES.myItems.route}
 						element={ITEMS_ROUTES.myItems.element}
+					/>
+					<Route
+						path={COLLECCTION_ROUTES.myCollections.route}
+						element={COLLECCTION_ROUTES.myCollections.element}
 					/>
 					<Route path={ITEMS_ROUTES.item.route} element={ITEMS_ROUTES.item.element} />
 				</Route>

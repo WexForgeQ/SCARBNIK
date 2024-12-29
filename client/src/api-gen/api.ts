@@ -918,10 +918,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				title?: string;
 				/** Тип коллекции */
 				type?: string;
+
+				owner_id?: string;
 			},
 			params: RequestParams = {},
 		) =>
-			this.request<Collection[], any>({
+			this.request<{ count: number; rows: Collection[] }, any>({
 				path: `/api/collections`,
 				method: 'GET',
 				query: query,
