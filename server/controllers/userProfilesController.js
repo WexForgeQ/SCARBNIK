@@ -40,11 +40,8 @@ class UserProfileController {
 
   async uploadImage(req, res, next) {
     try {
-      console.log(req.file)
       const buffer = req.file.buffer
-      console.log(buffer)
       const imageUrl = await saveImageToMinIO(buffer)
-      console.log(imageUrl)
       const updatedUserProfile = await UserProfile.update(
         { photo: imageUrl },
         { where: { user_id: req.body.userId } }

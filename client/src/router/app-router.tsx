@@ -40,6 +40,10 @@ export const AppRouter = () => {
 						path={COLLECCTION_ROUTES.myCollections.route}
 						element={COLLECCTION_ROUTES.myCollections.element}
 					/>
+					<Route
+						path={COLLECCTION_ROUTES.collection.route}
+						element={COLLECCTION_ROUTES.collection.element}
+					/>
 					<Route path={ITEMS_ROUTES.item.route} element={ITEMS_ROUTES.item.element} />
 				</Route>
 			</Routes>

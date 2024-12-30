@@ -8,7 +8,7 @@ export const LandingScreen = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	useEffect(() => {
-		if (window.location.pathname === '/' || '/') {
+		if (window.location.pathname === '/') {
 			navigate('/home');
 		}
 		dispatch(self());

@@ -116,7 +116,18 @@ router.get('/', CollectionController.getAll, errorMiddleware)
  *                   type: string
  */
 router.post('/', authMiddleware, CollectionController.create, errorMiddleware)
-
+router.post(
+  '/rate',
+  authMiddleware,
+  CollectionController.rateCollection,
+  errorMiddleware
+)
+router.delete(
+  '/rate',
+  authMiddleware,
+  CollectionController.deleteRating,
+  errorMiddleware
+)
 /**
  * @swagger
  * /api/collections/{id}:

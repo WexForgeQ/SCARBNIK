@@ -110,7 +110,7 @@ router.post(
  *                 error:
  *                   type: string
  */
-router.get('/:id', CollectionItemController.read)
+router.get('/:id', CollectionItemController.read, errorMiddleware)
 
 /**
  * @swagger
@@ -211,7 +211,11 @@ router.delete(
  *               items:
  *                 $ref: '#/components/schemas/CollectionItem'
  */
-router.get('/:collectionId/items', CollectionItemController.getAllItems)
+router.get(
+  '/:collectionId/items',
+  CollectionItemController.getAllItems,
+  errorMiddleware
+)
 
 /**
  * @swagger

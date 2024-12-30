@@ -69,7 +69,7 @@ const multer = require('multer')
  *               items:
  *                 $ref: '#/components/schemas/Item'
  */
-router.get('/', ItemController.list)
+router.get('/', ItemController.list, errorMiddleware)
 
 /**
  * @swagger
@@ -132,7 +132,7 @@ router.post('/', authMiddleware, ItemController.create, errorMiddleware)
  *                 error:
  *                   type: string
  */
-router.get('/:id', ItemController.read)
+router.get('/:id', ItemController.read, errorMiddleware)
 
 /**
  * @swagger

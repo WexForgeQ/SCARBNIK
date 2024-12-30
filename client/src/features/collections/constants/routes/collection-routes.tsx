@@ -1,4 +1,4 @@
-import { ItemScreen } from '../../presentation/collection.screen';
+import { CollectionScreen } from '../../presentation/collection.screen';
 import { CollectionsScreen } from '../../presentation/collections.screen';
 
 export const COLLECCTION_ROUTES = {
@@ -7,9 +7,9 @@ export const COLLECCTION_ROUTES = {
 		route: 'my-collections',
 		element: <CollectionsScreen />,
 	},
-	item: {
-		id: 'item',
-		route: 'item',
-		element: <ItemScreen />,
+	collection: {
+		id: 'collection',
+		route: 'collection',
+		element: <CollectionScreen />,
 	},
 };

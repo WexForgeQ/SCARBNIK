@@ -37,7 +37,7 @@ export const CollectionForm = () => {
 				});
 			}
 			if (response) {
-				if (response.status === 201) {
+				if (response.status === 200) {
 					navigate('/my-collections', { id: userData.data.id });
 					dispatch(self());
 				} else if (response.status === 401) {
@@ -68,8 +68,8 @@ export const CollectionForm = () => {
 	const { formState } = form;
 	console.log(formState.errors);
 	const getItem = async () => {
-		if (search.get('itemId')) {
-			const response = await fetchApi.api.itemsDetail(search.get('itemId')!);
+		if (search.get('collectionId')) {
+			const response = await fetchApi.api.collectionsDetail(search.get('collectionId')!);
 			if (response) {
 				form.reset(response.data);
 			}
@@ -78,7 +78,7 @@ export const CollectionForm = () => {
 
 	useEffect(() => {
 		getItem();
-	}, [search.get('itemId')]);
+	}, [search.get('collectionId')]);
 
 	return (
 		<FormProvider {...form}>
@@ -109,13 +109,7 @@ export const CollectionForm = () => {
 							container: () => 'rounded-[10px] h-[40px] bg-primary-sand border-none',
 						}}
 					/>
-					{/* <Controller
-						render={({ field }) => (
-							
-						)}
-						name="category_id"
-						control={form.control}
-					/> */}
+
 					<Button variant="primary" type="submit" className="mt-[100px] h-[36px]">
 						Сохранить
 					</Button>

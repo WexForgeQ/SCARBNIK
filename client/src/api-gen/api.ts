@@ -292,7 +292,7 @@ export class HttpClient<SecurityDataType = unknown> {
 						console.error('Ошибка обновления токена', e);
 					}
 				}
-				if (error.response.status === 400) {
+				if (error.response.status === 401) {
 					window.location.href = 'auth/login';
 				}
 				return Promise.reject(error);
@@ -540,6 +540,61 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				path: `/api/auth/verify-email`,
 				method: 'GET',
 				query: query,
+				format: 'json',
+				...params,
+			}),
+
+		postRating: (
+			data: {
+				/** Verification token */
+				rate: number;
+				tex?: string;
+				collection_id: string;
+				user_id: string;
+			},
+
+			params: RequestParams = {},
+		) =>
+			this.request<
+				{
+					tokens?: {
+						access_token?: string;
+						refresh_token?: string;
+					};
+					userid?: string;
+					role?: number;
+				},
+				void
+			>({
+				path: `/api/collections/rate`,
+				method: 'POST',
+				body: data,
+				format: 'json',
+				...params,
+			}),
+
+		deleteRating: (
+			data: {
+				collection_id: string;
+				user_id: string;
+			},
+
+			params: RequestParams = {},
+		) =>
+			this.request<
+				{
+					tokens?: {
+						access_token?: string;
+						refresh_token?: string;
+					};
+					userid?: string;
+					role?: number;
+				},
+				void
+			>({
+				path: `/api/collections/rate`,
+				method: 'DELETE',
+				body: data,
 				format: 'json',
 				...params,
 			}),
@@ -918,7 +973,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				title?: string;
 				/** Тип коллекции */
 				type?: string;
-
+				category_id?: string;
 				owner_id?: string;
 			},
 			params: RequestParams = {},

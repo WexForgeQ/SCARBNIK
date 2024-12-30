@@ -31,8 +31,7 @@ class ItemController {
       }
       return res.status(200).json({ imageUrl })
     } catch (error) {
-      console.log(error)
-      return res.status(400).json({ error: error.message })
+      return next(ApiError.badRequest(error.message))
     }
   }
 
@@ -59,7 +58,7 @@ class ItemController {
       return res.status(200).json(item)
     } catch (error) {
       console.log(error)
-      throw ApiError.internal('Внутренняя ошибка сервера')
+      return next(ApiError.badRequest(error.message))
     }
   }
 
@@ -74,7 +73,7 @@ class ItemController {
       const updatedItem = await Item.findByPk(req.params.id)
       return res.status(200).json(updatedItem)
     } catch (error) {
-      throw ApiError.internal('Внутренняя ошибка сервера')
+      return next(ApiError.badRequest(error.message))
     }
   }
 
@@ -88,7 +87,7 @@ class ItemController {
       }
       return res.status(204).json()
     } catch (error) {
-      throw ApiError.internal('Внутренняя ошибка сервера')
+      return next(ApiError.badRequest(error.message))
     }
   }
 
@@ -117,7 +116,7 @@ class ItemController {
       return res.status(200).json(items)
     } catch (error) {
       console.log(error)
-      throw ApiError.internal('Внутренняя ошибка сервера')
+      return next(ApiError.badRequest(error.message))
     }
   }
 }
