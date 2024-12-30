@@ -6,3 +6,8 @@ export * from './pagination.types';
 export * from './simple-table.types';
 export * from './table-actions.types';
 export * from './table.types';
+
+export type SelectValues = {
+	value: string;
+	label: string;
+};

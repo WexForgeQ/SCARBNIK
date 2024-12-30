@@ -58,6 +58,7 @@ class ItemController {
       }
       return res.status(200).json(item)
     } catch (error) {
+      console.log(error)
       throw ApiError.internal('Внутренняя ошибка сервера')
     }
   }

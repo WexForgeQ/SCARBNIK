@@ -2,7 +2,8 @@ const {
   Collection,
   CollectionItem,
   Item,
-  Category
+  Category,
+  User
 } = require('../models/models')
 const ApiError = require('../errors/ApiError')
 
@@ -11,7 +12,8 @@ class CollectionController {
     try {
       const collection = await Collection.create({
         ...req.body,
-        id: crypto.randomUUID()
+        id: crypto.randomUUID(),
+        views_count: 0
       })
       return res.status(201).json(collection)
     } catch (error) {
@@ -79,7 +81,8 @@ class CollectionController {
         offset,
         include: [
           { model: CollectionItem, include: [Item] },
-          { model: Category }
+          { model: Category },
+          { model: User }
         ]
       })
       return res.status(200).json(collections)

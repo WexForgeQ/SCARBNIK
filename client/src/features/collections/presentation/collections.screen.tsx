@@ -7,6 +7,7 @@ import Select from 'react-select';
 import { toast } from 'sonner';
 import { self } from '../../user/services/user.services';
 import { CollectionListComponent } from './components/collection.component';
+import { EditCollectionModal } from './components/collection.modal';
 
 export const CollectionsScreen = () => {
 	const dispatch = useAppDispatch();
@@ -54,7 +55,7 @@ export const CollectionsScreen = () => {
 
 	const deleteItem = async (item_id: string) => {
 		try {
-			const response = await fetchApi.api.itemsDelete(item_id);
+			const response = await fetchApi.api.collectionsDelete(item_id);
 
 			if (response.status === 204) {
 				if (userData.data.id) {
@@ -102,6 +103,8 @@ export const CollectionsScreen = () => {
 								value={field.value || ''}
 								className="w-[300px] rounded-[10px]"
 								classNames={{
+									input: () =>
+										'border border-gray-300 bg-primary-sand rounded-[10px] h-[40px]',
 									control: () =>
 										'border border-gray-300 bg-primary-sand rounded-[10px] h-[40px]',
 								}}
@@ -116,11 +119,15 @@ export const CollectionsScreen = () => {
 						variant="primary"
 						type="submit"
 						onClick={() =>
-							navigate('/my-items', { id: userData.data.id, modal: true, add: true })
+							navigate('/my-collections', {
+								id: userData.data.id,
+								modal: true,
+								add: true,
+							})
 						}
 						className="h-[40px]"
 					>
-						Создать предмет
+						Создать коллекцию
 					</Button>
 				</div>
 			</FormProvider>
@@ -134,11 +141,11 @@ export const CollectionsScreen = () => {
 					/>
 				))}
 			</div>
-			{/* <EditItemModal
+			<EditCollectionModal
 				getData={() => getData(userData.data.id)}
 				isOpen={!!search.get('modal')}
 				isEditMode={!!search.get('edit')}
-			/> */}
+			/>
 		</div>
 	);
 };
