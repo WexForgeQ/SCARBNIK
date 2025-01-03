@@ -333,9 +333,16 @@ const ItemRequest = sequelize.define(
       type: DataTypes.STRING(500),
       allowNull: false
     },
+    user_id: {
+      type: DataTypes.STRING,
+      references: {
+        model: User,
+        key: 'id'
+      }
+    },
     request_photo: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     category_id: {
       type: DataTypes.STRING,
@@ -398,6 +405,7 @@ User.hasMany(Collection, { foreignKey: 'owner_id' })
 User.hasMany(CollectionRating, { foreignKey: 'user_id' })
 User.hasMany(Item, { foreignKey: 'owner_id' })
 User.hasMany(ItemAdvertisement, { foreignKey: 'user_id' })
+User.hasMany(ItemRequest, { foreignKey: 'user_id' })
 
 // UserProfile association
 UserProfile.belongsTo(User, { foreignKey: 'user_id' })
@@ -435,6 +443,7 @@ CollectionItem.belongsTo(Item, { foreignKey: 'item_id' })
 
 // ItemRequest associations
 ItemRequest.belongsTo(Category, { foreignKey: 'category_id' })
+ItemRequest.belongsTo(User, { foreignKey: 'user_id' })
 
 // ItemAdvertisement associations
 ItemAdvertisement.belongsTo(Item, { foreignKey: 'item_id' })

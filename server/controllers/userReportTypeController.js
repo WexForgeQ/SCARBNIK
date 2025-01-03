@@ -3,18 +3,6 @@ const ApiError = require('../errors/ApiError')
 const crypto = require('crypto')
 
 class UserReportTypeController {
-  async create(req, res) {
-    try {
-      const userReportType = await UserReportType.create({
-        ...req.body,
-        id: crypto.randomUUID()
-      })
-      return res.status(201).json(userReportType)
-    } catch (error) {
-      return res.status(400).json({ error: error.message })
-    }
-  }
-
   async read(req, res) {
     try {
       const userReportType = await UserReportType.findByPk(req.params.id)
@@ -27,8 +15,41 @@ class UserReportTypeController {
     }
   }
 
-  async update(req, res) {
+  async create(req, res, next) {
     try {
+      const existingReportType = await UserReportType.findOne({
+        where: { title: req.body.title }
+      })
+      if (existingReportType) {
+        return next(
+          ApiError.badRequest('Тип жалобы с таким тайтлом уже существует')
+        )
+      }
+
+      const userReportType = await UserReportType.create({
+        ...req.body,
+        id: crypto.randomUUID()
+      })
+      return res.status(200).json(userReportType)
+    } catch (error) {
+      return res.status(400).json({ error: error.message })
+    }
+  }
+
+  async update(req, res, next) {
+    try {
+      const existingReportType = await UserReportType.findOne({
+        where: {
+          title: req.body.title,
+          id: req.params.id
+        }
+      })
+      if (existingReportType) {
+        return next(
+          ApiError.badRequest('Тип жалобы с таким тайтлом уже существует')
+        )
+      }
+
       const [updated] = await UserReportType.update(req.body, {
         where: { id: req.params.id }
       })
@@ -38,7 +59,7 @@ class UserReportTypeController {
       const updatedUserReportType = await UserReportType.findByPk(req.params.id)
       return res.status(200).json(updatedUserReportType)
     } catch (error) {
-      return res.status(error.status || 400).json({ error: error.message })
+      return res.status(400).json({ error: error.message })
     }
   }
 
@@ -50,7 +71,7 @@ class UserReportTypeController {
       if (!deleted) {
         throw ApiError.notFound('Тип жалобы не найден')
       }
-      return res.status(204).json()
+      return res.status(200).json()
     } catch (error) {
       return res.status(error.status || 400).json({ error: error.message })
     }

@@ -17,7 +17,7 @@ import { self } from '../../user/services/user.services';
 import { CollectionListComponent } from './components/collection.component';
 import { EditCollectionModal } from './components/collection.modal';
 
-export const CollectionsScreen = () => {
+export const AllCollectionsScreen = () => {
 	const dispatch = useAppDispatch();
 	const userData = useAppSelector((store) => store.userData);
 	const navigate = useAppNavigate();
@@ -52,51 +52,25 @@ export const CollectionsScreen = () => {
 		}
 	}, [window.location.pathname]);
 
-	const getData = async (user_id: string, name?: string, category?: string) => {
+	const getData = async (name?: string, category?: string) => {
 		try {
-			if (isPublicView) {
-				const response = await fetchApi.api.collectionsList({
-					title: name,
-					category_id: category,
-					isPublic: true,
-				});
+			const response = await fetchApi.api.collectionsList({
+				title: name,
+				category_id: category,
+				isPublic: true,
+			});
 
-				if (response.status === 200) {
-					setCollections(response.data.rows);
-				} else if (response.status === 401) {
-					toast.error('Не авторизован');
-				} else {
-					toast.error('Ошибка:' + response.statusText);
-				}
+			if (response.status === 200) {
+				setCollections(response.data.rows);
+			} else if (response.status === 401) {
+				toast.error('Не авторизован');
 			} else {
-				const response = await fetchApi.api.collectionsList({
-					owner_id: user_id,
-					title: name,
-					category_id: category,
-				});
-
-				if (response.status === 200) {
-					setCollections(response.data.rows);
-				} else if (response.status === 401) {
-					toast.error('Не авторизован');
-				} else {
-					toast.error('Ошибка:' + response.statusText);
-				}
+				toast.error('Ошибка:' + response.statusText);
 			}
 		} catch (error) {
 			console.error('Произошла ошибка:', error);
 		}
 	};
-
-	useEffect(() => {
-		if (userData.data.id) {
-			if (name) {
-				getData(userData.data.id, name);
-			} else {
-				getData(userData.data.id);
-			}
-		}
-	}, [search.get('modal')]);
 
 	const deleteItem = async (item_id: string) => {
 		try {
@@ -121,10 +95,8 @@ export const CollectionsScreen = () => {
 	};
 
 	useEffect(() => {
-		if (userData.data.id) {
-			getData(userData.data.id, name, category);
-		}
-	}, [userData.data.id, name, category, dispatch]);
+		getData(name, category);
+	}, [name, category]);
 
 	return (
 		<div className="flex w-[1000px] flex-col justify-start gap-5 self-start">
@@ -180,7 +152,9 @@ export const CollectionsScreen = () => {
 			<div className="flex flex-wrap gap-5">
 				{collections.map((item) => (
 					<CollectionListComponent
-						getData={getData}
+						getData={(user_id: string, name?: string) => {
+							return {};
+						}}
 						onDelete={deleteItem}
 						key={item.id}
 						item={item}

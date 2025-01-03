@@ -97,7 +97,7 @@ router.post('/', authMiddleware, UserFavoriteController.create, errorMiddleware)
  *                 error:
  *                   type: string
  */
-router.get('/:id', UserFavoriteController.read)
+//router.get('/:id', UserFavoriteController.read)
 
 /**
  * @swagger
@@ -295,6 +295,11 @@ router.post(
  *               items:
  *                 $ref: '#/components/schemas/UserFavorite'
  */
-router.get('/:userId/favorites', UserFavoriteController.getAllFavorites)
+router.get(
+  '/getAll',
+  authMiddleware,
+  UserFavoriteController.getAllFavorites,
+  errorMiddleware
+)
 
 module.exports = router

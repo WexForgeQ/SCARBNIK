@@ -19,11 +19,9 @@ export function createAsyncCases<T extends SliceInitialState>(
 	onError?: (state: Draft<T>, action: PayloadAction<any>) => void,
 ) {
 	const handleSuccess = (state: Draft<T>, action: PayloadAction<any>) => {
-		console.log(action);
 		state.fetch_data = action.payload.fetch_data;
 		state.status = action.payload.payload.status;
 		if (action.payload.payload.status === 200) {
-			console.log(123);
 			state.error = null;
 			state.data = action.payload.payload.data;
 			console.log(state.data);

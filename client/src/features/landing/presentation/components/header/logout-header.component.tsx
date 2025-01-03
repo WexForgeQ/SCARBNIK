@@ -69,9 +69,9 @@ export const LogoutHeader = () => {
 										</li>
 										<li
 											className="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100"
-											onClick={() => navigate('/favorites')}
+											onClick={() => navigate('/favorite-collections')}
 										>
-											Избранное
+											Избранные коллекции
 										</li>
 									</ul>
 								</div>

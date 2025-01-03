@@ -1,7 +1,22 @@
-const { ItemAdvertisement, Category, User, Item } = require('../models/models')
+const {
+  ItemAdvertisement,
+  Category,
+  User,
+  Item,
+  UserProfile
+} = require('../models/models')
 const ApiError = require('../errors/ApiError')
 const crypto = require('crypto')
 const { Op } = require('sequelize')
+const nodemailer = require('nodemailer')
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'alltransbatura@gmail.com',
+    pass: 'gpdfozzaxvohzqmi'
+  }
+})
 
 class ItemAdvertisementController {
   async create(req, res) {
@@ -10,13 +25,13 @@ class ItemAdvertisementController {
         ...req.body,
         id: crypto.randomUUID()
       })
-      return res.status(201).json(itemAdvertisement)
+      return res.status(200).json(itemAdvertisement)
     } catch (error) {
       return res.status(400).json({ error: error.message })
     }
   }
 
-  async read(req, res) {
+  async read(req, res, next) {
     try {
       const itemAdvertisement = await ItemAdvertisement.findByPk(
         req.params.id,
@@ -25,7 +40,7 @@ class ItemAdvertisementController {
         }
       )
       if (!itemAdvertisement) {
-        throw ApiError.notFound('Объявление на предмет не найдено')
+        return next(ApiError.notFound('Объявление на предмет не найдено'))
       }
       return res.status(200).json(itemAdvertisement)
     } catch (error) {
@@ -67,6 +82,56 @@ class ItemAdvertisementController {
     }
   }
 
+  async advertResponse(req, res, next) {
+    try {
+      const { user_id, owner_id, item_id } = req.query
+      console.log(req.params)
+      const advert = await ItemAdvertisement.findOne({
+        where: { id: item_id }
+      })
+
+      if (!advert) {
+        return next(ApiError.notFound('Объявление на предмет не найдено'))
+      }
+
+      const user = await User.findOne({
+        where: { id: user_id }
+      })
+
+      const owner = await User.findOne({
+        where: { id: owner_id }
+      })
+
+      if (!user || !owner) {
+        return next(
+          ApiError.notFound('Пользователь или владелец объявления не найден')
+        )
+      }
+
+      const userNotification = {
+        from: 'alltransbatura@gmail.com',
+        to: user.email,
+        subject: 'Отклик на объявление',
+        text: `Вы откликнулись на объявление пользователя ${owner.email}. Удачного обмена!`
+      }
+
+      const ownerNotification = {
+        from: 'alltransbatura@gmail.com',
+        to: owner.email,
+        subject: 'Отклик на ваше объявление',
+        text: `Ваше объявление получило отклик от пользователя ${user.email}. Удачного обмена!`
+      }
+
+      await transporter.sendMail(userNotification)
+      await transporter.sendMail(ownerNotification)
+
+      return res.status(200).json()
+    } catch (error) {
+      console.log(error)
+      return res.status(error.status || 400).json({ error: error.message })
+    }
+  }
+
   async listAll(req, res) {
     const {
       page = 1,
@@ -92,7 +157,11 @@ class ItemAdvertisementController {
 
     const options = {
       where: filter,
-      include: [{ model: Category }, { model: User }, { model: Item }],
+      include: [
+        { model: Category },
+        { model: User, include: [UserProfile] },
+        { model: Item }
+      ],
       order: [[sortField, sortOrder.toUpperCase()]],
       limit: parseInt(pageSize, 10),
       offset: (parseInt(page, 10) - 1) * parseInt(pageSize, 10)

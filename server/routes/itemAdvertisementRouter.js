@@ -2,6 +2,7 @@ const express = require('express')
 const ItemAdvertisementController = require('../controllers/itemAdvertisementController')
 const authMiddleware = require('../middleware/authMiddleware')
 const errorMiddleware = require('../middleware/errorMiddleware')
+const itemAdvertisementController = require('../controllers/itemAdvertisementController')
 const router = express.Router()
 
 /**
@@ -252,6 +253,13 @@ router.delete(
   '/:id',
   authMiddleware,
   ItemAdvertisementController.delete,
+  errorMiddleware
+)
+
+router.patch(
+  '/response',
+  authMiddleware,
+  itemAdvertisementController.advertResponse,
   errorMiddleware
 )
 

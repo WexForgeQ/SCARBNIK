@@ -3,7 +3,7 @@ const ItemRequestController = require('../controllers/itemRequestController')
 const authMiddleware = require('../middleware/authMiddleware')
 const errorMiddleware = require('../middleware/errorMiddleware')
 const router = express.Router()
-
+const multer = require('multer')
 /**
  * @swagger
  * components:
@@ -129,8 +129,21 @@ router.get('/', ItemRequestController.listAll)
  *                 error:
  *                   type: string
  */
-router.post('/', authMiddleware, ItemRequestController.create, errorMiddleware)
+const upload = multer({ storage: multer.memoryStorage() })
+router.post(
+  '/',
+  authMiddleware,
+  upload.single('item_photo'),
+  ItemRequestController.create,
+  errorMiddleware
+)
 
+router.patch(
+  '/response',
+  authMiddleware,
+  ItemRequestController.requestResponse,
+  errorMiddleware
+)
 /**
  * @swagger
  * /api/itemrequests/{id}:
@@ -202,6 +215,7 @@ router.get('/:id', ItemRequestController.read)
 router.put(
   '/:id',
   authMiddleware,
+  upload.single('item_photo'),
   ItemRequestController.update,
   errorMiddleware
 )

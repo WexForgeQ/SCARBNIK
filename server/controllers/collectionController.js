@@ -145,7 +145,14 @@ class CollectionController {
 
   async getAll(req, res, next) {
     try {
-      const { page = 1, limit = 10, title, category_id, owner_id } = req.query
+      const {
+        page = 1,
+        limit = 10,
+        title,
+        category_id,
+        owner_id,
+        isPublic
+      } = req.query
       const offset = (page - 1) * limit
       const where = {}
       if (title) {
@@ -157,10 +164,14 @@ class CollectionController {
       if (category_id) {
         where.category_id = category_id
       }
+      if (isPublic) {
+        where.isPublic = isPublic
+      }
       const collections = await Collection.findAndCountAll({
         where,
         limit,
         offset,
+        order: [['title', 'ASC']],
         include: [
           { model: CollectionItem, include: [Item] },
           { model: Category },

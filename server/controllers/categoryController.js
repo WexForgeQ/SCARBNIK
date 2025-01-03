@@ -2,13 +2,21 @@ const { Category } = require('../models/models')
 const ApiError = require('../errors/ApiError')
 
 class CategoryController {
-  async create(req, res) {
+  async create(req, res, next) {
     try {
+      const existingCategory = await Category.findOne({
+        where: { title: req.body.title }
+      })
+      if (existingCategory) {
+        return next(
+          ApiError.badRequest('Категория с таким именем уже существует')
+        )
+      }
       const category = await Category.create({
         ...req.body,
         id: crypto.randomUUID()
       })
-      return res.status(201).json(category)
+      return res.status(200).json(category)
     } catch (error) {
       return res.status(400).json({ error: error.message })
     }
@@ -26,8 +34,20 @@ class CategoryController {
     }
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     try {
+      const existingCategory = await Category.findOne({
+        where: {
+          title: req.body.title,
+          id: req.params.id
+        }
+      })
+      if (existingCategory) {
+        return next(
+          ApiError.badRequest('Категория с таким именем уже существует')
+        )
+      }
+
       const [updated] = await Category.update(req.body, {
         where: { id: req.params.id }
       })
@@ -41,17 +61,21 @@ class CategoryController {
     }
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
     try {
       const deleted = await Category.destroy({
         where: { id: req.params.id }
       })
       if (!deleted) {
-        throw ApiError.notFound('Категория не найдена')
+        return next(
+          ApiError.notFound('Категория не найдена или содержит элементы')
+        )
       }
-      return res.status(204).json()
+      return res.status(200).json()
     } catch (error) {
-      return res.status(error.status || 400).json({ error: error.message })
+      return next(
+        ApiError.notFound('Категория не найдена или содержит элементы')
+      )
     }
   }
 

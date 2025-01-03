@@ -64,9 +64,7 @@ export const userSlice = createSlice({
 		createAsyncCases(
 			builder,
 			getUser,
-			(state: UserSliceState, action) => {
-				toast.success('Успешное получение пользователя');
-			},
+			(state: UserSliceState, action) => {},
 			(state: UserSliceState, action) => {
 				console.log(state);
 				toast.error(state.error);
@@ -75,9 +73,7 @@ export const userSlice = createSlice({
 		createAsyncCases(
 			builder,
 			self,
-			(state: UserSliceState, action) => {
-				toast.success('Успешное получение пользователя');
-			},
+			(state: UserSliceState, action) => {},
 			(state: UserSliceState, action) => {
 				console.log(state);
 				toast.error(state.error);

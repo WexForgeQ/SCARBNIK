@@ -19,21 +19,21 @@ export const LandingNav = () => {
 					id=""
 				/>
 				<HeaderNavItem
-					clickCallback={() => navigate('/orders')}
-					text={'Заказы'}
-					isSelected={location.pathname === '/orders   '}
+					clickCallback={() => navigate('/requests')}
+					text={'Запросы'}
+					isSelected={location.pathname === '/requests'}
 					id=""
 				/>
 				<HeaderNavItem
-					clickCallback={() => navigate('/home')}
+					clickCallback={() => navigate('/advertisements')}
 					text={'Объявления'}
-					isSelected={currentSectionId === 'some_id'}
+					isSelected={location.pathname === '/advertisements'}
 					id=""
 				/>
 				<HeaderNavItem
-					clickCallback={() => navigate('/home')}
-					text={'Мои коллекции'}
-					isSelected={currentSectionId === 'some_id'}
+					clickCallback={() => navigate('/all-collections')}
+					text={'Коллекции'}
+					isSelected={location.pathname === '/all-collections'}
 					id=""
 				/>
 			</div>

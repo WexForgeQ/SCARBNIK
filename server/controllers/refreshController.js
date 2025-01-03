@@ -27,7 +27,7 @@ class RefreshController {
     if (!cookieHeader) {
       res.clearCookie('accessToken', { httpOnly: true, secure: true })
       res.clearCookie('refreshToken', { httpOnly: true, secure: true })
-      return res.status(401).json({ message: 'Не авторизован' })
+      return res.status(404).json({ message: 'Не авторизован' })
     }
     const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
       const [name, value] = cookie.split('=').map((c) => c.trim())
@@ -40,7 +40,7 @@ class RefreshController {
     if (!token || token === ' ') {
       res.clearCookie('accessToken', { httpOnly: true, secure: true })
       res.clearCookie('refreshToken', { httpOnly: true, secure: true })
-      return res.status(401).json({ message: 'Не авторизован' })
+      return res.status(404).json({ message: 'Не авторизован' })
     }
 
     try {
@@ -73,7 +73,7 @@ class RefreshController {
       res.clearCookie('accessToken', { httpOnly: true, secure: true })
       res.clearCookie('refreshToken', { httpOnly: true, secure: true })
       return res
-        .status(401)
+        .status(404)
         .json({ message: 'Не авторизован', error: error.message })
     }
   }

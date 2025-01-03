@@ -32,7 +32,7 @@ export const ProfileScreen = () => {
 				});
 				if (response.status === 200) {
 					dispatch(getUserProfile(userData.data.id));
-					console.log(userProfileData);
+
 					dispatch(self());
 				} else {
 					toast.error(response.data.message);

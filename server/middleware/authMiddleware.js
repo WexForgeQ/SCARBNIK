@@ -4,7 +4,6 @@ module.exports = function (req, res, next) {
   if (req.method === 'OPTIONS') {
     return next()
   }
-  console.log(123)
   try {
     const cookieHeader = req.headers.cookie
     if (!cookieHeader) {

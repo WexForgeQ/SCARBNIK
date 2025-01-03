@@ -87,11 +87,12 @@ export interface ItemRequest {
 	/** Description of the item request */
 	request_description: string;
 	/** URL of the request photo */
-	request_photo: string;
+	item_photo: File;
 	/** Category ID (UUID) of the item request */
 	category_id: string;
 	/** Public ID for the item request */
 	public_id?: number;
+	user_id?: string;
 }
 
 export interface TokenRefresh {
@@ -292,7 +293,7 @@ export class HttpClient<SecurityDataType = unknown> {
 						console.error('Ошибка обновления токена', e);
 					}
 				}
-				if (error.response.status === 401) {
+				if (error.response.status === 404) {
 					window.location.href = 'auth/login';
 				}
 				return Promise.reject(error);
@@ -975,6 +976,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				type?: string;
 				category_id?: string;
 				owner_id?: string;
+				isPublic?: true;
 			},
 			params: RequestParams = {},
 		) =>
@@ -1102,7 +1104,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 			},
 			params: RequestParams = {},
 		) =>
-			this.request<ItemAdvertisement[], any>({
+			this.request<{ total: number; itemAdvertisements: any[] }, any>({
 				path: `/api/itemadvertisements`,
 				method: 'GET',
 				query: query,
@@ -1110,6 +1112,36 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				...params,
 			}),
 
+		itemadvertisementsResponse: (
+			query?: {
+				user_id?: string;
+				owner_id?: string;
+				item_id?: string;
+			},
+			params: RequestParams = {},
+		) =>
+			this.request<{ total: number; itemAdvertisements: any[] }, any>({
+				path: `/api/itemadvertisements/response`,
+				method: 'PATCH',
+				query: query,
+				format: 'json',
+				...params,
+			}),
+		itemRequestsResponse: (
+			query?: {
+				user_id?: string;
+				owner_id?: string;
+				item_id?: string;
+			},
+			params: RequestParams = {},
+		) =>
+			this.request<{ total: number; itemAdvertisements: any[] }, any>({
+				path: `/api/itemrequests/response`,
+				method: 'PATCH',
+				query: query,
+				format: 'json',
+				...params,
+			}),
 		/**
 		 * No description
 		 *
@@ -1227,10 +1259,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				sortField?: string;
 				/** Порядок сортировки (ASC или DESC) */
 				sortOrder?: 'ASC' | 'DESC';
+				user_id?: string;
 			},
 			params: RequestParams = {},
 		) =>
-			this.request<ItemRequest[], any>({
+			this.request<{ total: number; itemRequests: any[] }, any>({
 				path: `/api/itemrequests`,
 				method: 'GET',
 				query: query,
@@ -1256,7 +1289,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				path: `/api/itemrequests`,
 				method: 'POST',
 				body: data,
-				type: ContentType.Json,
+				type: ContentType.FormData,
 				format: 'json',
 				...params,
 			}),
@@ -1300,7 +1333,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				path: `/api/itemrequests/${id}`,
 				method: 'PUT',
 				body: data,
-				type: ContentType.Json,
+				type: ContentType.FormData,
 				format: 'json',
 				...params,
 			}),
@@ -1652,6 +1685,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				...params,
 			}),
 
+		getAllFavorites: (
+			query: {
+				userId?: string;
+				favoritable_type?: string;
+			},
+			params: RequestParams = {},
+		) =>
+			this.request<
+				void,
+				{
+					error?: string;
+				}
+			>({
+				path: `/api/userfavorites/getAll`,
+				method: 'get',
+				query: query,
+				type: ContentType.Json,
+				...params,
+			}),
 		/**
 		 * No description
 		 *
@@ -2066,7 +2118,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 			},
 			params: RequestParams = {},
 		) =>
-			this.request<User[], any>({
+			this.request<{ total: number; users: any[] }, any>({
 				path: `/api/users`,
 				method: 'GET',
 				query: query,

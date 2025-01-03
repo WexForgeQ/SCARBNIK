@@ -1,6 +1,5 @@
-import { Collection, fetchApi } from '@api-gen';
+import { Collection, fetchApi, UserFavorite } from '@api-gen';
 import {
-	Button,
 	FormElementLabel,
 	Input,
 	SelectValues,
@@ -8,6 +7,7 @@ import {
 	useAppNavigate,
 	useAppSelector,
 } from '@core';
+import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ import { self } from '../../user/services/user.services';
 import { CollectionListComponent } from './components/collection.component';
 import { EditCollectionModal } from './components/collection.modal';
 
-export const CollectionsScreen = () => {
+export const FavoritesCollectionsScreen = () => {
 	const dispatch = useAppDispatch();
 	const userData = useAppSelector((store) => store.userData);
 	const navigate = useAppNavigate();
@@ -31,6 +31,7 @@ export const CollectionsScreen = () => {
 	const [collections, setCollections] = useState<Array<Collection>>([]);
 	const [isPublicView, SetPublicView] = useState(false);
 	const [categories, setCategories] = useState<Array<SelectValues>>([]);
+	const [favorites, setFavorites] = useState<Array<UserFavorite>>([]);
 	const getCategories = async () => {
 		const response = await fetchApi.api.categoriesList();
 		if (response.status === 200) {
@@ -47,56 +48,52 @@ export const CollectionsScreen = () => {
 	useEffect(() => {
 		dispatch(self());
 		getCategories();
-		if (window.location.pathname === '/all-collections') {
-			SetPublicView(true);
-		}
-	}, [window.location.pathname]);
+	}, []);
 
-	const getData = async (user_id: string, name?: string, category?: string) => {
+	const getUserFavorites = async () => {
 		try {
-			if (isPublicView) {
-				const response = await fetchApi.api.collectionsList({
-					title: name,
-					category_id: category,
-					isPublic: true,
-				});
-
-				if (response.status === 200) {
-					setCollections(response.data.rows);
-				} else if (response.status === 401) {
-					toast.error('Не авторизован');
-				} else {
-					toast.error('Ошибка:' + response.statusText);
-				}
+			const response = await fetchApi.api.getAllFavorites({
+				favoritable_type: 'COLLECTION',
+				userId: userData.data.id,
+			});
+			if (response.status === 200) {
+				dispatch(self());
+				setFavorites((response.data as any).rows);
+			} else if (response.status === 401) {
+				toast.error('Не авторизован');
 			} else {
-				const response = await fetchApi.api.collectionsList({
-					owner_id: user_id,
-					title: name,
-					category_id: category,
-				});
+				toast.error('Ошибка:' + response.statusText);
+			}
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				toast.error(error.response?.data.message);
+			}
+		}
+	};
 
-				if (response.status === 200) {
-					setCollections(response.data.rows);
-				} else if (response.status === 401) {
-					toast.error('Не авторизован');
-				} else {
-					toast.error('Ошибка:' + response.statusText);
-				}
+	const getData = async () => {
+		try {
+			const response = await fetchApi.api.collectionsList({
+				title: name,
+				category_id: category,
+				isPublic: true,
+			});
+			if (response.status === 200) {
+				console.log(favorites);
+				setCollections(
+					response.data.rows.filter((row: any) =>
+						favorites.some((fv) => fv.favoritable_id === row.id),
+					),
+				);
+			} else if (response.status === 401) {
+				toast.error('Не авторизован');
+			} else {
+				toast.error('Ошибка:' + response.statusText);
 			}
 		} catch (error) {
 			console.error('Произошла ошибка:', error);
 		}
 	};
-
-	useEffect(() => {
-		if (userData.data.id) {
-			if (name) {
-				getData(userData.data.id, name);
-			} else {
-				getData(userData.data.id);
-			}
-		}
-	}, [search.get('modal')]);
 
 	const deleteItem = async (item_id: string) => {
 		try {
@@ -105,9 +102,9 @@ export const CollectionsScreen = () => {
 			if (response.status === 204) {
 				if (userData.data.id) {
 					if (name) {
-						getData(userData.data.id, name);
+						getData();
 					} else {
-						getData(userData.data.id);
+						getData();
 					}
 				}
 			} else if (response.status === 401) {
@@ -121,17 +118,17 @@ export const CollectionsScreen = () => {
 	};
 
 	useEffect(() => {
-		if (userData.data.id) {
-			getData(userData.data.id, name, category);
-		}
-	}, [userData.data.id, name, category, dispatch]);
+		getUserFavorites();
+	}, [userData.data.id]);
+
+	useEffect(() => {
+		getData();
+	}, [favorites, category, name]);
 
 	return (
 		<div className="flex w-[1000px] flex-col justify-start gap-5 self-start">
 			<div className="flex h-[50px] w-full items-center justify-center rounded-t-[20px] bg-primary-darkBrown">
-				<p className="text-[30px] text-primary-sand">
-					{isPublicView ? 'Опубликованные коллекции' : 'Мои коллекции'}
-				</p>
+				<p className="text-[30px] text-primary-sand">Избранные коллекции</p>
 			</div>
 			<FormProvider {...filtersForm}>
 				<div className="flex h-fit w-full items-center justify-between rounded-t-[20px]">
@@ -158,23 +155,6 @@ export const CollectionsScreen = () => {
 							container: () => 'rounded-[10px] h-[40px] bg-primary-sand border-none',
 						}}
 					/>
-
-					{!isPublicView && (
-						<Button
-							variant="primary"
-							type="submit"
-							onClick={() =>
-								navigate('/my-collections', {
-									id: userData.data.id,
-									modal: true,
-									add: true,
-								})
-							}
-							className="h-[40px]"
-						>
-							Создать коллекцию
-						</Button>
-					)}
 				</div>
 			</FormProvider>
 			<div className="flex flex-wrap gap-5">
@@ -188,7 +168,9 @@ export const CollectionsScreen = () => {
 				))}
 			</div>
 			<EditCollectionModal
-				getData={() => getData(userData.data.id)}
+				getData={(user_id: string, name?: string) => {
+					return {};
+				}}
 				isOpen={!!search.get('modal')}
 				isEditMode={!!search.get('edit')}
 			/>
