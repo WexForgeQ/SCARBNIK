@@ -14,6 +14,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import Select from 'react-select';
 import { toast } from 'sonner';
+import { ExchangeModal } from '../exchange/exchange.modal';
 import { self } from '../user/services/user.services';
 import { AdvListComponent } from './advert-list.component';
 import { EditAdvertsModal } from './adverts.modal';
@@ -211,7 +212,12 @@ export const AdvertsScreen = () => {
 			</div>
 			<EditAdvertsModal
 				getData={() => getData()}
-				isOpen={!!search.get('modal')}
+				isOpen={!!search.get('modal') && !search.get('exchange')}
+				isEditMode={!!search.get('edit')}
+			/>
+			<ExchangeModal
+				getData={() => getData()}
+				isOpen={!!search.get('modal') && !!search.get('exchange')}
 				isEditMode={!!search.get('edit')}
 			/>
 		</div>

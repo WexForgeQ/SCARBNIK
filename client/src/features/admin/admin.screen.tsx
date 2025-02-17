@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { toast } from 'sonner';
 import { self } from '../user/services/user.services';
+import { ReportComponent } from './report.component';
 import { UserComponent } from './user.component';
 
 export const AdminPanelScreen = () => {
@@ -27,11 +28,25 @@ export const AdminPanelScreen = () => {
 			currentReport: '',
 			newReport: '',
 			userControlType: '1',
+			userName: '',
 		},
 	});
 	const [categories, setCategories] = useState<Array<SelectValues>>([]);
 	const [reports, setReports] = useState<Array<SelectValues>>([]);
+	const [userReports, setUserReports] = useState<any[]>([]);
 	const [users, setUsers] = useState<Array<any>>([]);
+
+	useEffect(() => {
+		dispatch(self);
+	}, []);
+
+	useEffect(() => {
+		checkRole();
+		if (userData.data.role === 2) {
+			toast.error('Нет доступа');
+			navigate('/home');
+		}
+	}, [userData]);
 
 	const userControlTypeOptions = [
 		{
@@ -48,6 +63,18 @@ export const AdminPanelScreen = () => {
 		},
 	];
 
+	const checkRole = async () => {
+		const response = await fetchApi.api.usersSelfList();
+		if (!response.data.id) {
+			toast.error('Нет доступа');
+			navigate('/home');
+		} else if (response.status === 401) {
+			toast.error('Нет доступа');
+			navigate('/home');
+		} else {
+		}
+	};
+
 	const getCategories = async () => {
 		const response = await fetchApi.api.categoriesList();
 		if (response.status === 200) {
@@ -60,9 +87,23 @@ export const AdminPanelScreen = () => {
 	};
 
 	const getUsers = async () => {
-		const response = await fetchApi.api.usersList();
+		const response = await fetchApi.api.usersList(
+			constsForm.watch('userControlType') === '2' ? { isBanned: true } : {},
+		);
 		if (response.status === 200) {
 			setUsers(response.data.users);
+			getUserReports();
+		} else if (response.status === 401) {
+			toast.error('Не авторизован');
+		} else {
+			toast.error('Ошибка:' + response.statusText);
+		}
+	};
+
+	const getUserReports = async () => {
+		const response = await fetchApi.api.userreportsList();
+		if (response.status === 200) {
+			setUserReports(response.data as any[]);
 		} else if (response.status === 401) {
 			toast.error('Не авторизован');
 		} else {
@@ -239,7 +280,8 @@ export const AdminPanelScreen = () => {
 		getCategories();
 		getReports();
 		getUsers();
-	}, []);
+		getUserReports();
+	}, [constsForm.watch('userControlType')]);
 
 	return (
 		<div className="flex w-[1000px] flex-col justify-start gap-5 self-start">
@@ -367,33 +409,73 @@ export const AdminPanelScreen = () => {
 				<p className="text-[30px] text-primary-darkBrown">
 					{'Панель управления пользователями'}
 				</p>
-				<Select
-					options={userControlTypeOptions}
-					value={userControlTypeOptions.find((uc) => {
-						uc.value === constsForm.getValues('userControlType');
-					})}
-					className="w-[300px] self-start rounded-[10px] border border-gray-300 bg-primary-sand"
-					onChange={(value) => {
-						constsForm.setValue('userControlType', value?.value!);
-					}}
-					classNames={{
-						control: () => 'rounded-[10px] h-[40px] bg-primary-sand border-none',
-						menu: () => 'rounded-[10px] h-[100px] bg-primary-sand',
-						menuList: () =>
-							'rounded-[10px] text-primary-brown absolute bg-primary-sand border-none',
-						container: () => 'rounded-[10px] h-[40px] bg-primary-sand border-none',
-					}}
-				/>
+				<div className="flex gap-[20px]">
+					<Select
+						options={userControlTypeOptions}
+						value={userControlTypeOptions.find((uc) => {
+							uc.value === constsForm.getValues('userControlType');
+						})}
+						className="w-[300px] self-start rounded-[10px] border border-gray-300 bg-primary-sand"
+						onChange={(value) => {
+							constsForm.setValue('userControlType', value?.value!);
+						}}
+						classNames={{
+							control: () => 'rounded-[10px] h-[40px] bg-primary-sand border-none',
+							menu: () => 'rounded-[10px] h-[100px] bg-primary-sand',
+							menuList: () =>
+								'rounded-[10px] text-primary-brown absolute bg-primary-sand border-none',
+							container: () => 'rounded-[10px] h-[40px] bg-primary-sand border-none',
+						}}
+					/>
+					<Input
+						labelClassName={'text-primary-sand'}
+						placeholder="Имя пользователя"
+						{...constsForm.register('userName')}
+						inputClassName="bg-primary-sand text-black"
+						wrapperClassName="flex flex-row items-center gap-[20px]"
+					/>
+				</div>
+
 				<div className="flex flex-wrap gap-5">
-					{users &&
-						users.map((item) => (
-							<UserComponent
-								getData={getUsers}
-								onDelete={deleteUser}
-								key={item.id}
-								item={item}
-							/>
-						))}
+					{constsForm.getValues('userControlType') !== '3' ? (
+						<>
+							{!!users.length &&
+								users
+									.filter((user) =>
+										(user.login as string).includes(
+											constsForm.watch('userName'),
+										),
+									)
+									.map((item) => (
+										<UserComponent
+											getData={getUsers}
+											onDelete={deleteUser}
+											key={item.id}
+											item={item}
+										/>
+									))}
+						</>
+					) : (
+						<>
+							{!!users.length &&
+								userReports &&
+								userReports
+									.filter((item) =>
+										users
+											.find((user) => user.id === item.user_id)
+											.login.includes(constsForm.watch('userName')),
+									)
+									.map((item) => (
+										<ReportComponent
+											getData={getUsers}
+											onDelete={deleteUser}
+											key={item.id}
+											item={item}
+											users={users}
+										/>
+									))}
+						</>
+					)}
 				</div>
 			</div>
 		</div>
