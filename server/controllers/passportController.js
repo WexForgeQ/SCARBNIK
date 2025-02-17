@@ -52,6 +52,9 @@ passport.use(
         let user = await User.findOne({
           where: { email: profile.emails[0].value }
         })
+        if (user.isBanned) {
+          return done(ApiError.badRequest('Аккаунт заблокирован'))
+        }
         if (!user) {
           user = await User.create({
             id: crypto.randomUUID(),
@@ -101,7 +104,9 @@ passport.use(
       try {
         const email = profile.emails[0].value
         let user = await User.findOne({ where: { email } })
-
+        if (user.isBanned) {
+          return done(ApiError.badRequest('Аккаунт заблокирован'))
+        }
         if (!user) {
           user = await User.create({
             id: crypto.randomUUID(),

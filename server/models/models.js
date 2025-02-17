@@ -254,7 +254,7 @@ const Item = sequelize.define(
       type: DataTypes.STRING
     }
   },
-  { timestamps: false }
+  { timestamps: false, onDelete: 'CASCADE' }
 )
 
 const CollectionItem = sequelize.define(
@@ -268,7 +268,8 @@ const CollectionItem = sequelize.define(
       type: DataTypes.STRING,
       references: {
         model: Collection,
-        key: 'id'
+        key: 'id',
+        onDelete: 'CASCADE'
       }
     },
     item_id: {
@@ -396,16 +397,78 @@ const ItemAdvertisement = sequelize.define(
   { timestamps: false }
 )
 
+const UsersExchange = sequelize.define('usersexchange', {
+  id: {
+    type: DataTypes.STRING,
+    primaryKey: true
+  },
+  public_id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false
+  },
+  exch_item_id: {
+    type: DataTypes.STRING,
+    references: {
+      model: Item,
+      key: 'id'
+    }
+  },
+  proposal_item_id: {
+    type: DataTypes.STRING,
+    references: {
+      model: Item,
+      key: 'id'
+    }
+  },
+  submitted_by_owner: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
+  },
+  submitted_by_user: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
+  },
+  owner_id: {
+    type: DataTypes.STRING,
+    references: {
+      model: User,
+      key: 'id'
+    }
+  }
+})
+
+UsersExchange.belongsTo(Item, {
+  foreignKey: 'exch_item_id',
+  as: 'exchangeItem',
+  onDelete: 'CASCADE'
+})
+
+// Association with Item model for proposal_item_id
+UsersExchange.belongsTo(Item, {
+  foreignKey: 'proposal_item_id',
+  as: 'proposalItem',
+  onDelete: 'CASCADE'
+})
+
+// Association with User model for owner_id
+UsersExchange.belongsTo(User, {
+  foreignKey: 'owner_id',
+  as: 'owner'
+})
+
 // User associations
 User.hasOne(UserProfile, { foreignKey: 'user_id' })
 User.hasMany(UserFavorite, { foreignKey: 'user_id' })
 User.hasMany(UserReport, { foreignKey: 'user_id' })
 User.hasMany(UserReport, { foreignKey: 'reporter_id' })
-User.hasMany(Collection, { foreignKey: 'owner_id' })
+User.hasMany(Collection, { foreignKey: 'owner_id', onDelete: 'CASCADE' })
 User.hasMany(CollectionRating, { foreignKey: 'user_id' })
-User.hasMany(Item, { foreignKey: 'owner_id' })
-User.hasMany(ItemAdvertisement, { foreignKey: 'user_id' })
-User.hasMany(ItemRequest, { foreignKey: 'user_id' })
+User.hasMany(Item, { foreignKey: 'owner_id', onDelete: 'CASCADE' })
+User.hasMany(ItemAdvertisement, { foreignKey: 'user_id', onDelete: 'CASCADE' })
+User.hasMany(ItemRequest, { foreignKey: 'user_id', onDelete: 'CASCADE' })
 
 // UserProfile association
 UserProfile.belongsTo(User, { foreignKey: 'user_id' })
@@ -421,34 +484,55 @@ UserReport.belongsTo(UserReportType, { foreignKey: 'report_type_id' })
 // Collection associations
 Collection.belongsTo(User, { foreignKey: 'owner_id' })
 Collection.belongsTo(Category, { foreignKey: 'category_id' })
-Collection.hasMany(CollectionItem, { foreignKey: 'collection_id' })
+Collection.hasMany(CollectionItem, {
+  foreignKey: 'collection_id',
+  onDelete: 'CASCADE'
+})
 Collection.hasMany(CollectionRating, { foreignKey: 'collection_id' })
 
 // Category associations
 Category.hasMany(Collection, { foreignKey: 'category_id' })
-Category.hasMany(ItemRequest, { foreignKey: 'category_id' })
-Category.hasMany(ItemAdvertisement, { foreignKey: 'category_id' })
+Category.hasMany(ItemRequest, {
+  foreignKey: 'category_id',
+  onDelete: 'CASCADE'
+})
+Category.hasMany(ItemAdvertisement, {
+  foreignKey: 'category_id',
+  onDelete: 'CASCADE'
+})
 
 // CollectionRating associations
-CollectionRating.belongsTo(Collection, { foreignKey: 'collection_id' })
+CollectionRating.belongsTo(Collection, {
+  foreignKey: 'collection_id',
+  onDelete: 'CASCADE'
+})
 CollectionRating.belongsTo(User, { foreignKey: 'user_id' })
 
 // Item associations
-Item.belongsTo(User, { foreignKey: 'owner_id' })
-Item.hasMany(CollectionItem, { foreignKey: 'item_id' })
+Item.belongsTo(User, { foreignKey: 'owner_id', onDelete: 'CASCADE' })
+Item.hasMany(CollectionItem, { foreignKey: 'item_id', onDelete: 'CASCADE' })
 
 // CollectionItem associations
 CollectionItem.belongsTo(Collection, { foreignKey: 'collection_id' })
-CollectionItem.belongsTo(Item, { foreignKey: 'item_id' })
+CollectionItem.belongsTo(Item, { foreignKey: 'item_id', onDelete: 'CASCADE' })
 
 // ItemRequest associations
 ItemRequest.belongsTo(Category, { foreignKey: 'category_id' })
 ItemRequest.belongsTo(User, { foreignKey: 'user_id' })
 
 // ItemAdvertisement associations
-ItemAdvertisement.belongsTo(Item, { foreignKey: 'item_id' })
-ItemAdvertisement.belongsTo(User, { foreignKey: 'user_id' })
-ItemAdvertisement.belongsTo(Category, { foreignKey: 'category_id' })
+ItemAdvertisement.belongsTo(Item, {
+  foreignKey: 'item_id',
+  onDelete: 'CASCADE'
+})
+ItemAdvertisement.belongsTo(User, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE'
+})
+ItemAdvertisement.belongsTo(Category, {
+  foreignKey: 'category_id',
+  onDelete: 'CASCADE'
+})
 
 module.exports = {
   User,
@@ -463,5 +547,6 @@ module.exports = {
   Item,
   ItemAdvertisement,
   ItemRequest,
+  UsersExchange,
   sequelize
 }

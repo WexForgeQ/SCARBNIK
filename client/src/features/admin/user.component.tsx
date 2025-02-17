@@ -60,7 +60,7 @@ export const UserComponent = ({ item, onDelete, getData }: Props) => {
 	};
 
 	return (
-		<div className="flex h-fit w-[900px] flex-row items-center gap-[20px] rounded-lg bg-primary-green scrollbar-none">
+		<div className="flex h-fit w-[900px] flex-row items-center gap-[20px] rounded-lg border border-primary-darkBrown bg-primary-green p-[10px] scrollbar-none">
 			<div className="flex flex-col">
 				{item.userprofile.photo ? (
 					<img
@@ -104,14 +104,6 @@ export const UserComponent = ({ item, onDelete, getData }: Props) => {
 			<div className="flex flex-col gap-[10px]">
 				{item.role !== 1 && (
 					<>
-						<Button
-							variant="primary"
-							type="submit"
-							onClick={() => onDelete(item.id!)}
-							className="h-[40px] w-fit bg-red-950"
-						>
-							Удалить
-						</Button>
 						<Button
 							variant="primary"
 							type="submit"

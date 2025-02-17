@@ -9,7 +9,7 @@ class UserReportController {
         ...req.body,
         id: crypto.randomUUID()
       })
-      return res.status(201).json(userReport)
+      return res.status(200).json({ message: 'Жалоба отправлена' })
     } catch (error) {
       return next(ApiError.badRequest(error.message))
     }
@@ -47,10 +47,11 @@ class UserReportController {
       const deleted = await UserReport.destroy({
         where: { id: req.params.id }
       })
+
       if (!deleted) {
         return next(ApiError.notFound('Жалоба пользователя не найдена'))
       }
-      return res.status(204).json()
+      return res.status(200).json()
     } catch (error) {
       return next(ApiError.internal('Произошла внутренняя ошибка сервера'))
     }
@@ -83,7 +84,7 @@ class UserReportController {
           where.report_date.$lte = new Date(toDate)
         }
       }
-      const userReports = await UserReport.findAndCountAll({
+      const userReports = await UserReport.findAll({
         where,
         limit,
         offset,

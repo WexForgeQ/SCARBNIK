@@ -6,6 +6,7 @@ import { store } from '../core/store';
 import { ADMIN_ROUTES } from '../features/admin/router';
 import { ADV_ROUTES } from '../features/adverts/router';
 import { COLLECCTION_ROUTES } from '../features/collections/constants';
+import { EX_ROUTES } from '../features/exchange/router';
 import { ITEMS_ROUTES } from '../features/items/constants';
 import { NOT_FOUND_ROUTES } from '../features/notfound/router';
 import { PROFILE_ROUTES } from '../features/profile/constants/routes/profile-routes';
@@ -44,6 +45,7 @@ export const AppRouter = () => {
 						path={COLLECCTION_ROUTES.myCollections.route}
 						element={COLLECCTION_ROUTES.myCollections.element}
 					/>
+					<Route path={EX_ROUTES.ex.route} element={EX_ROUTES.ex.element} />
 					<Route
 						path={COLLECCTION_ROUTES.collection.route}
 						element={COLLECCTION_ROUTES.collection.element}

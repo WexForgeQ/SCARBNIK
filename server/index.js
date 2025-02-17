@@ -1,14 +1,37 @@
 const express = require('express')
+const bcrypt = require('bcrypt')
 const cors = require('cors')
 const app = express()
 const fs = require('fs')
 const https = require('https')
-const { sequelize } = require('./models/models')
+const { sequelize, User, UserProfile } = require('./models/models')
 const { DataTypes } = require('sequelize')
 const router = require('./routes/index')
 const swaggerSetup = require('./swagger')
 const session = require('express-session')
 const passport = require('./controllers/passportController')
+
+async function createAdminUser() {
+  const userExists = await User.findOne({ where: { login: 'admin' } })
+  const hashPassword = await bcrypt.hash('admin', 2)
+  if (!userExists) {
+    await User.create({
+      id: 'admin',
+      email: 'admin@gmail.com',
+      login: 'admin',
+      password: hashPassword,
+      role: 1,
+      isApproved: true
+    })
+    await UserProfile.create({
+      id: 'adimn',
+      user_id: 'admin',
+      fio: 'Admin',
+      phone: '+375336061382',
+      registration_date: sequelize.literal('CURRENT_TIMESTAMP')
+    })
+  }
+}
 
 app.use(
   cors({
@@ -56,6 +79,7 @@ const startserver = async () => {
   try {
     await sequelize.authenticate()
     await sequelize.sync()
+    await createAdminUser()
     const httpsServer = https.createServer(options, app)
     // app.listen(PORT, () => {
     //   console.log('HTTP Server is running on port', PORT)

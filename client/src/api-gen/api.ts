@@ -147,9 +147,8 @@ export interface UserReport {
 	 * Date of the report
 	 * @format date-time
 	 */
-	report_date: string;
+	report_date: Date;
 	/** Описание жалобы */
-	description: string;
 	/** Public ID for the report */
 	public_id?: number;
 	/** Reporter ID (UUID) */
@@ -705,6 +704,46 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 			this.request<Category[], any>({
 				path: `/api/categories`,
 				method: 'GET',
+				format: 'json',
+				...params,
+			}),
+		exchangeList: (query?: any, params: RequestParams = {}) =>
+			this.request<any, any>({
+				path: `/api/exchange`,
+				method: 'GET',
+				query: query,
+				format: 'json',
+				...params,
+			}),
+		exchangeCreate: (data: any, params: RequestParams = {}) =>
+			this.request<any[], any>({
+				path: `/api/exchange`,
+				method: 'POST',
+				body: data,
+				format: 'json',
+				...params,
+			}),
+		exchangeSubmitOwner: (data: any, params: RequestParams = {}) =>
+			this.request<any[], any>({
+				path: `/api/exchange/confirmByOwner`,
+				method: 'POST',
+				body: data,
+				format: 'json',
+				...params,
+			}),
+		exchangeSubmitProposer: (data: any, params: RequestParams = {}) =>
+			this.request<any[], any>({
+				path: `/api/exchange/confirmByProposer`,
+				method: 'POST',
+				body: data,
+				format: 'json',
+				...params,
+			}),
+		exchangeSubmitDelete: (data: any, params: RequestParams = {}) =>
+			this.request<any[], any>({
+				path: `/api/exchange/`,
+				method: 'DELETE',
+				body: data,
 				format: 'json',
 				...params,
 			}),

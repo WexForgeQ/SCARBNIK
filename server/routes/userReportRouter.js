@@ -219,6 +219,11 @@ router.put('/:id', authMiddleware, UserReportController.update, errorMiddleware)
  *                 error:
  *                   type: string
  */
-router.delete('/:id', authMiddleware)
+router.delete(
+  '/:id',
+  authMiddleware,
+  UserReportController.delete,
+  errorMiddleware
+)
 
 module.exports = router
