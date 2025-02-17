@@ -12,6 +12,7 @@ const userFavoriteRouter = require('./userFavoritesRouter')
 const userProfileRouter = require('./userProfileRouter')
 const userReportRouter = require('./userReportRouter')
 const userReportTypeRouter = require('./userReportTypeRouter')
+const exchangeRouter = require('./exchangeRouter')
 const router = express.Router()
 
 router.use('/auth', authRouter)
@@ -27,5 +28,5 @@ router.use('/userfavorites', userFavoriteRouter)
 router.use('/userprofiles', userProfileRouter)
 router.use('/userreports', userReportRouter)
 router.use('/userreporttypes', userReportTypeRouter)
-
+router.use('/exchange', exchangeRouter)
 module.exports = router

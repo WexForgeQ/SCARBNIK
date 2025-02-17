@@ -131,6 +131,9 @@ class AuthController {
       if (!user.isApproved) {
         return next(ApiError.badRequest('Аккаунт не подтвержден'))
       }
+      if (user.isBanned) {
+        return next(ApiError.badRequest('Аккаунт заблокирован'))
+      }
       if (!user.isOauthProfile) {
         let comparePassword = bcrypt.compareSync(password, user.password)
         if (!comparePassword) {

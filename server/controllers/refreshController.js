@@ -36,7 +36,7 @@ class RefreshController {
     }, {})
 
     const token = cookies.refreshToken
-    console.log(token)
+
     if (!token || token === ' ') {
       res.clearCookie('accessToken', { httpOnly: true, secure: true })
       res.clearCookie('refreshToken', { httpOnly: true, secure: true })
@@ -47,7 +47,7 @@ class RefreshController {
       const decoded = jwt.verify(token, process.env.SECRET_KEY)
       const user = await User.findByPk(decoded.userId)
       console.log(user)
-      if (!user || user.refresh_token !== token) {
+      if (!user || user.refresh_token !== token || user.isBanned) {
         throw ApiError.Unauthorized('Не авторизован')
       }
 

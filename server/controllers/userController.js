@@ -45,6 +45,9 @@ class UserController {
         where: { id: userId },
         include: [{ model: UserProfile }]
       })
+      if (user && user.isBanned) {
+        throw ApiError.Unauthorized('Не авторизован')
+      }
       if (!user) {
         return res.status(200).json()
       }
