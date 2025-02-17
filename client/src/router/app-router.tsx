@@ -66,8 +66,8 @@ export const AppRouter = () => {
 					/>
 					<Route path={ADV_ROUTES.adverts.route} element={ADV_ROUTES.adverts.element} />
 					<Route path={ITEMS_ROUTES.item.route} element={ITEMS_ROUTES.item.element} />
-					<Route path="*" element={NOT_FOUND_ROUTES.adminPanel.element} />
 				</Route>
+				<Route path="*" element={NOT_FOUND_ROUTES.adminPanel.element} />
 			</Routes>
 		</Provider>
 	);
