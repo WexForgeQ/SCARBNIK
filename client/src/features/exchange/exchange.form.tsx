@@ -153,9 +153,9 @@ export const ExchangeForm = () => {
 			});
 			if (response) {
 				if (response.status === 200) {
-					navigate('/advertisements', { id: userData.data.id });
 					dispatch(self());
 					toast.success('Предложение отправлено');
+					window.history.back();
 				} else if (response.status === 401) {
 					toast.error('Не авторизован');
 				} else {
@@ -173,7 +173,7 @@ export const ExchangeForm = () => {
 		<form className="flex w-fit flex-col self-center" onSubmit={form.handleSubmit(onSubmit)}>
 			<div className="flex h-fit flex-col gap-[24px] bg-primary-brown">
 				<FormElementLabel className="text-primary-sand">
-					{formState.errors.second_item_id?.message || 'Предмет для обмена'}
+					{formState.errors.second_item_id?.message || 'Предмет пользователя'}
 				</FormElementLabel>
 				<div className="flex w-fit gap-[10px] self-start">
 					{userItems.length &&
@@ -220,11 +220,13 @@ export const ExchangeForm = () => {
 						/>
 					) : (
 						<p>
-							{
-								userItems.find(
-									(item: any) => item.value === form.watch('second_item_id'),
-								).label
-							}
+							{userItems.find(
+								(item: any) => item.value === form.watch('second_item_id'),
+							)
+								? userItems.find(
+										(item: any) => item.value === form.watch('second_item_id'),
+									).label
+								: ''}
 						</p>
 					)}
 				</div>

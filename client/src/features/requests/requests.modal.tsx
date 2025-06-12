@@ -15,7 +15,7 @@ export const EditRequestsModal = ({ isOpen, isEditMode, getData }: ModalProps) =
 
 	return (
 		<Modal
-			headerTitle={isEditMode ? 'Редактировать запрос' : 'Создать запрос'}
+			headerTitle={isEditMode ? 'Редактировать заказ' : 'Создать заказ'}
 			onClose={onClose}
 			className="bg-primary-darkBrown text-primary-sand"
 			isOpen={isOpen}

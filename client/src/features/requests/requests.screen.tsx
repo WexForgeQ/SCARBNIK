@@ -192,7 +192,7 @@ export const RequestsScreen = () => {
 							}
 							className="h-[40px]"
 						>
-							Создать запрос
+							Создать заказ
 						</Button>
 					}
 				</div>

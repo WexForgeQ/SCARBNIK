@@ -20,7 +20,7 @@ export const LandingNav = () => {
 				/>
 				<HeaderNavItem
 					clickCallback={() => navigate('/requests')}
-					text={'Запросы'}
+					text={'Заказы'}
 					isSelected={location.pathname === '/requests'}
 					id=""
 				/>
