@@ -5,10 +5,10 @@ const crypto = require('crypto')
 const sharp = require('sharp')
 const minioClient = require('../minio')
 const OpenAI = require('openai')
+require('dotenv').config()
 
 const openai = new OpenAI({
-  apiKey:
-    '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'
+  apiKey: process.env.OPENAPI_KEY
 })
 
 const saveImageToMinIO = async (buffer) => {
