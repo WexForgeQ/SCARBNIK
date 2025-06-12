@@ -15,7 +15,7 @@ class ExchangeController {
     try {
       const existingProposal = await UsersExchange.findOne({
         where: {
-          owner_id: req.body.owner_id,
+          owner_id: req.body.user_id,
           exch_item_id: req.body.exch_item_id,
           proposal_item_id: req.body.proposal_item_id
         }
@@ -155,7 +155,7 @@ class ExchangeController {
   }
 
   async deleteExchange(req, res, next) {
-    const { exchange_id } = req.params
+    const { exchange_id } = req.body
 
     try {
       const exchange = await UsersExchange.findByPk(exchange_id)

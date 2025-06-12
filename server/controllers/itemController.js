@@ -4,6 +4,12 @@ const { Op } = require('sequelize')
 const crypto = require('crypto')
 const sharp = require('sharp')
 const minioClient = require('../minio')
+const OpenAI = require('openai')
+
+const openai = new OpenAI({
+  apiKey:
+    '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'
+})
 
 const saveImageToMinIO = async (buffer) => {
   const bucketName = 'scarbnikpictures'
@@ -49,13 +55,43 @@ class ItemController {
     }
   }
 
-  async read(req, res) {
+  async read(req, res, next) {
     try {
       const item = await Item.findByPk(req.params.id)
       if (!item) {
         throw ApiError.notFound('Элемент не найден')
       }
       return res.status(200).json(item)
+    } catch (error) {
+      console.log(error)
+      return next(ApiError.badRequest(error.message))
+    }
+  }
+
+  async getInfo(req, res, next) {
+    try {
+      console.log(req.body)
+      const item = await Item.findByPk(req.body.id)
+      if (!item) {
+        throw ApiError.notFound('Элемент не найден')
+      }
+
+      // Дожидаемся ответа от OpenAI
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        store: true,
+        messages: [
+          {
+            role: 'user',
+            content: `Опиши полностью антикварный предмет по его описанию и названию. Опиши его историю и значимость и добавь интересных фактов. Название и описание: ${item.title} и ${item.item_description}. Форматируй как просто текст для вывода в HTML`
+          }
+        ]
+      })
+
+      const aiResult = completion.choices[0].message
+
+      console.log(aiResult)
+      return res.status(200).json(aiResult.content)
     } catch (error) {
       console.log(error)
       return next(ApiError.badRequest(error.message))

@@ -199,6 +199,35 @@ router.put('/:id', authMiddleware, ItemController.update, errorMiddleware)
  *                   type: string
  */
 router.delete('/:id', authMiddleware, ItemController.delete, errorMiddleware)
+
+/**
+ * @swagger
+ * /api/items/{id}/getInfo:
+ *   delete:
+ *     summary: Удаляет предмет по ID
+ *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID предмета
+ *     responses:
+ *       200:
+ *         description: Предмет успешно удален
+ *       404:
+ *         description: Предмет не найден
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+router.patch('/getInfo', ItemController.getInfo, errorMiddleware)
+
 const upload = multer({ storage: multer.memoryStorage() })
 /**
  * @swagger
