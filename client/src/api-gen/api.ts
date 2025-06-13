@@ -2123,6 +2123,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 				...params,
 			}),
 
+		itemInfo: (id: string, params: RequestParams = {}) =>
+			this.request<
+				void,
+				{
+					error?: string;
+				}
+			>({
+				path: `/api/items/getInfo`,
+				method: 'PATCH',
+				body: {
+					id: id,
+				},
+			}),
+
 		/**
 		 * No description
 		 *

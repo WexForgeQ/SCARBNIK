@@ -42,6 +42,20 @@ export const CollectionItemListComponent = ({ item, onDelete }: Props) => {
 					</p>
 				</div>
 			</div>
+			<Button
+				variant="primary"
+				type="submit"
+				onClick={() =>
+					navigate('', {
+						id: userData.data.id,
+						itemId: item.id,
+						info: true,
+					})
+				}
+				className="h-[40px] bg-primary-brown"
+			>
+				Инфо
+			</Button>
 			{userData.data.id === item.owner_id && (
 				<Button
 					variant="primary"

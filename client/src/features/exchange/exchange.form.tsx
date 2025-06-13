@@ -141,7 +141,7 @@ export const ExchangeForm = () => {
 			search.get('advId') && form.setValue('second_item_id', advert.item.id);
 		}
 	}, [advert, request]);
-
+	console.log(form.watch('second_item_id'));
 	const onSubmit = async () => {
 		try {
 			let response;
@@ -168,15 +168,18 @@ export const ExchangeForm = () => {
 			}
 		}
 	};
+	console.log(userItems);
 
 	return (
 		<form className="flex w-fit flex-col self-center" onSubmit={form.handleSubmit(onSubmit)}>
 			<div className="flex h-fit flex-col gap-[24px] bg-primary-brown">
-				<FormElementLabel className="text-primary-sand">
-					{formState.errors.second_item_id?.message || 'Предмет пользователя'}
-				</FormElementLabel>
+				{!search.get('advId') && (
+					<FormElementLabel className="text-primary-sand">
+						{formState.errors.second_item_id?.message || 'Предмет пользователя'}
+					</FormElementLabel>
+				)}
 				<div className="flex w-fit gap-[10px] self-start">
-					{userItems.length &&
+					{!!userItems.length &&
 						userItems.find(
 							(item: any) => item.value === form.watch('second_item_id'),
 						) &&

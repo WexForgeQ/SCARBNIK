@@ -209,17 +209,16 @@ export const RequestListComponent = ({
 							Предложить обмен
 						</Button>
 					)}
-					{userData.data.id === item.user.id ||
-						(userData.data.role === 1 && (
-							<Button
-								variant="primary"
-								type="submit"
-								onClick={() => onDelete(item.id!)}
-								className="h-[40px] bg-red-950"
-							>
-								Удалить запрос
-							</Button>
-						))}
+					{(userData.data.id === item.user.id || userData.data.role === 1) && (
+						<Button
+							variant="primary"
+							type="submit"
+							onClick={() => onDelete(item.id!)}
+							className="h-[40px] bg-red-950"
+						>
+							Удалить запрос
+						</Button>
+					)}
 					{userData.data.id === item.user.id && (
 						<Button
 							variant="primary"

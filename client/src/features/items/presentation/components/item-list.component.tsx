@@ -78,6 +78,20 @@ export const ItemListComponent = ({ item, onDelete, getData }: Props) => {
 						navigate('/my-items', {
 							id: userData.data.id,
 							itemId: item.id,
+							info: true,
+						})
+					}
+					className="h-[40px] bg-primary-brown"
+				>
+					Инфо
+				</Button>
+				<Button
+					variant="primary"
+					type="submit"
+					onClick={() =>
+						navigate('/my-items', {
+							id: userData.data.id,
+							itemId: item.id,
 							modal: true,
 							edit: true,
 						})

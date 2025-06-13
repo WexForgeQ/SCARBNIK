@@ -8,6 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import Select from 'react-select';
 import { toast } from 'sonner';
 import { CollectionItemListComponent } from '../../items/presentation/components/collection-items-list.component';
+import { ItemInfoModal } from '../../items/presentation/components/item-info.modal';
 import { self } from '../../user/services/user.services';
 
 export const CollectionScreen = () => {
@@ -252,6 +253,11 @@ export const CollectionScreen = () => {
 						</div>
 					))}
 				</div>
+				<ItemInfoModal
+					isOpen={!!search.get('itemId') && !!search.get('info')}
+					isEditMode
+					getData={() => {}}
+				/>
 			</div>
 		)
 	);

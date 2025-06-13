@@ -187,6 +187,20 @@ export const AdvListComponent = ({ item, onDelete, getData, favorites, setFavori
 					</p>
 				</div>
 				<div className="flex flex-row justify-between pt-[200px]">
+					<Button
+						variant="primary"
+						type="submit"
+						onClick={() =>
+							navigate('', {
+								id: userData.data.id,
+								itemId: item.item.id,
+								info: true,
+							})
+						}
+						className="h-[40px] bg-primary-brown"
+					>
+						Инфо
+					</Button>
 					{userData.data.id !== item.user.id && (
 						<Button
 							variant="primary"
@@ -203,17 +217,16 @@ export const AdvListComponent = ({ item, onDelete, getData, favorites, setFavori
 							Предложить обмен
 						</Button>
 					)}
-					{userData.data.id === item.user.id ||
-						(userData.data.role === 1 && (
-							<Button
-								variant="primary"
-								type="submit"
-								onClick={() => onDelete(item.id!)}
-								className="h-[40px] bg-red-950"
-							>
-								Удалить объявление
-							</Button>
-						))}
+					{(userData.data.id === item.user.id || userData.data.role === 1) && (
+						<Button
+							variant="primary"
+							type="submit"
+							onClick={() => onDelete(item.id!)}
+							className="h-[40px] bg-red-950"
+						>
+							Удалить объявление
+						</Button>
+					)}
 					{userData.data.id === item.user.id && (
 						<Button
 							variant="primary"

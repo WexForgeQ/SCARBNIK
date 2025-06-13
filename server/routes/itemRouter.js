@@ -228,6 +228,8 @@ router.delete('/:id', authMiddleware, ItemController.delete, errorMiddleware)
  */
 router.patch('/getInfo', ItemController.getInfo, errorMiddleware)
 
+router.post('/getExchangeRate', ItemController.getExchangeRate, errorMiddleware)
+
 const upload = multer({ storage: multer.memoryStorage() })
 /**
  * @swagger

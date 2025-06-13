@@ -15,6 +15,7 @@ import { useSearchParams } from 'react-router-dom';
 import Select from 'react-select';
 import { toast } from 'sonner';
 import { ExchangeModal } from '../exchange/exchange.modal';
+import { ItemInfoModal } from '../items/presentation/components/item-info.modal';
 import { self } from '../user/services/user.services';
 import { AdvListComponent } from './advert-list.component';
 import { EditAdvertsModal } from './adverts.modal';
@@ -219,6 +220,11 @@ export const AdvertsScreen = () => {
 				getData={() => getData()}
 				isOpen={!!search.get('modal') && !!search.get('exchange')}
 				isEditMode={!!search.get('edit')}
+			/>
+			<ItemInfoModal
+				isOpen={!!search.get('itemId') && !!search.get('info')}
+				isEditMode
+				getData={() => {}}
 			/>
 		</div>
 	);

@@ -83,7 +83,39 @@ class ItemController {
         messages: [
           {
             role: 'user',
-            content: `Опиши полностью антикварный предмет по его описанию и названию. Опиши его историю и значимость и добавь интересных фактов. Название и описание: ${item.title} и ${item.item_description}. Форматируй как просто текст для вывода в HTML`
+            content: `Опиши полностью антикварный предмет по его описанию и названию. Опиши его историю и значимость и добавь интересных фактов и оценочную стоимость. Название и описание: ${item.title} и ${item.item_description}. Форматируй просто строка с абзацами`
+          }
+        ]
+      })
+
+      const aiResult = completion.choices[0].message
+
+      console.log(aiResult)
+      return res.status(200).json(aiResult.content)
+    } catch (error) {
+      console.log(error)
+      return next(ApiError.badRequest(error.message))
+    }
+  }
+
+  async getExchangeRate(req, res, next) {
+    try {
+      console.log(req.body)
+      const firstItem = await Item.findByPk(req.body.first_item_id)
+      const secondItem = await Item.findByPk(req.body.second_item_id)
+
+      if (!firstItem || !secondItem) {
+        throw ApiError.notFound('Элемент не найден')
+      }
+
+      // Дожидаемся ответа от OpenAI
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        store: true,
+        messages: [
+          {
+            role: 'user',
+            content: `Оцени эквивалентность обмена предметами и выгоду для каждого участника обмена по десятибальной шкале. Верни только оценку и комментарий к оценке с названиями и описаниями 1: ${firstItem.title}:${firstItem.item_description} 2: ${secondItem.title}:${secondItem.item_description}. Формат - просто строка`
           }
         ]
       })

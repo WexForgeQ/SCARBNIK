@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { self } from '../../user/services/user.services';
+import { ItemInfoModal } from './components/item-info.modal';
 import { ItemListComponent } from './components/item-list.component';
 import { EditItemModal } from './components/item.modal';
 
@@ -116,6 +117,11 @@ export const ItemsScreen = () => {
 				getData={() => getData(userData.data.id)}
 				isOpen={!!search.get('modal')}
 				isEditMode={!!search.get('edit')}
+			/>
+			<ItemInfoModal
+				isOpen={!!search.get('itemId') && !!search.get('info')}
+				isEditMode
+				getData={() => {}}
 			/>
 		</div>
 	);

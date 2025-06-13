@@ -33,6 +33,9 @@ export const AdminPanelScreen = () => {
 	});
 	const [categories, setCategories] = useState<Array<SelectValues>>([]);
 	const [reports, setReports] = useState<Array<SelectValues>>([]);
+	const [advertisements, setAdv] = useState<Array<SelectValues>>([]);
+	const [req, setReq] = useState<Array<SelectValues>>([]);
+	const [col, setCol] = useState<Array<SelectValues>>([]);
 	const [userReports, setUserReports] = useState<any[]>([]);
 	const [users, setUsers] = useState<Array<any>>([]);
 
@@ -126,6 +129,41 @@ export const AdminPanelScreen = () => {
 		const response = await fetchApi.api.userreporttypesList();
 		if (response.status === 200) {
 			setReports(response.data.map((ct) => ({ label: ct.title!, value: ct.id! })));
+		} else if (response.status === 401) {
+			toast.error('Не авторизован');
+		} else {
+			toast.error('Ошибка:' + response.statusText);
+		}
+	};
+
+	const getAdverts = async () => {
+		const response = await fetchApi.api.itemadvertisementsList();
+		if (response.status === 200) {
+			setAdv(
+				response.data.itemAdvertisements.map((ct) => ({ label: ct.title!, value: ct.id! })),
+			);
+		} else if (response.status === 401) {
+			toast.error('Не авторизован');
+		} else {
+			toast.error('Ошибка:' + response.statusText);
+		}
+	};
+
+	const getRequests = async () => {
+		const response = await fetchApi.api.itemrequestsList();
+		if (response.status === 200) {
+			setReq(response.data.itemRequests.map((ct) => ({ label: ct.title!, value: ct.id! })));
+		} else if (response.status === 401) {
+			toast.error('Не авторизован');
+		} else {
+			toast.error('Ошибка:' + response.statusText);
+		}
+	};
+
+	const getCollections = async () => {
+		const response = await fetchApi.api.collectionsList();
+		if (response.status === 200) {
+			setCol(response.data.rows.map((ct) => ({ label: ct.title!, value: ct.id! })));
 		} else if (response.status === 401) {
 			toast.error('Не авторизован');
 		} else {
@@ -281,6 +319,9 @@ export const AdminPanelScreen = () => {
 		getReports();
 		getUsers();
 		getUserReports();
+		getAdverts();
+		getRequests();
+		getCollections();
 	}, [constsForm.watch('userControlType')]);
 
 	return (
@@ -476,6 +517,34 @@ export const AdminPanelScreen = () => {
 									))}
 						</>
 					)}
+				</div>
+			</div>
+			<div className="flex h-fit flex-col items-center gap-[30px] rounded-[20px] bg-primary-green p-[30px]">
+				<p className="text-[30px] text-primary-darkBrown">
+					{'Статистика по пользователям'}
+				</p>
+				<div className="flex flex-col gap-[20px]">
+					<FormElementLabel className="text-[30px]">
+						Общее число пользователей системы: {users.length}
+					</FormElementLabel>
+					<FormElementLabel className="text-[30px]">
+						Заблокированных пользователей:{' '}
+						{users.filter((user) => user.isBanned).length}
+					</FormElementLabel>
+				</div>
+			</div>
+			<div className="flex h-fit flex-col items-center gap-[30px] rounded-[20px] bg-primary-green p-[30px]">
+				<p className="text-[30px] text-primary-darkBrown">{'Статистика'}</p>
+				<div className="flex flex-col gap-[20px]">
+					<FormElementLabel className="text-[30px]">
+						Объявлений в системе: {advertisements.length}
+					</FormElementLabel>
+					<FormElementLabel className="text-[30px]">
+						Запросов в системе: {req.length}
+					</FormElementLabel>
+					<FormElementLabel className="text-[30px]">
+						Коллекций в системе: {col.length}
+					</FormElementLabel>
 				</div>
 			</div>
 		</div>
